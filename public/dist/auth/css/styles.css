@@ -1,0 +1,9 @@
+header{
+    background-image: url("../assets/img/BACKGROUND_APLIKASI_foto_KUNING.jpeg");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-size:cover;
+    height: 90vh;
+    overflow:scroll
+}

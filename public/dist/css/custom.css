@@ -1,0 +1,143 @@
+#wrapper {
+	background: #edf1f5;
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: center center;
+	background-size:cover;
+	min-height: 100vh;
+	/* margin-top: 20px; */
+}
+.text-themecolor {
+	color: #fff; 
+}
+
+.table td, .table th {
+	padding: 0.3rem;
+	vertical-align: top;
+	border-top: 1px solid #dee2e6;
+}
+
+/* fieldset {
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding-top: 0.35em;
+	padding-bottom: 0.625em;
+	padding-left: 0.75em;
+	padding-right: 0.75em;
+	border: 2px;
+} */
+
+.fontface {
+	font-family:Poppins,sans-serif;
+	font-size: 14px;
+}
+
+.bg-dark-blue {
+    background-color: #200993 !important;
+}
+
+.bg-dark-green {
+    background-color: #066514 !important;
+}
+
+.bg-dark-orange {
+    background-color: #9e3716 !important;
+}
+
+.bg-dark-purple {
+    background-color: #6a0475 !important;
+}
+
+.bg-maroon {
+    background-color: #8d091c !important;
+}
+
+		/*mycustom*/
+		.select2-results li {
+			font-family: inherit;
+		}
+
+		.select2-container {
+			font-family: inherit;
+			font-size: 14px;
+		}
+
+		.select2-container-multi .select2-choices .select2-search-field input {
+			font-family: inherit;
+		}
+		.pager {
+			text-align: "left"; !important;
+			align: "left"; 
+		}
+		.pager .page {
+			margin-left: 10px;
+		}
+		.pager .previous {
+			margin-left: 10px;
+		}
+		.pager .next {
+			margin-left: 10px;
+		}
+		.pager .last {
+			margin-left: 10px;
+		}
+        .breadcrumb .breadcrumb-item.active {
+            color: #fff;
+        }
+
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+.animate-flicker {
+   -webkit-animation: flickerAnimation .5s infinite;
+   -moz-animation: flickerAnimation .5s infinite;
+   -o-animation: flickerAnimation .5s infinite;
+	animation: flickerAnimation .5s infinite;
+}
+
+@media (min-width: 768px) {
+    .mini-sidebar .top-navbar .navbar-header {
+        width:60px;
+        text-align: center;
+        flex-shrink: 0;
+        padding-left: 0
+    }
+
+    .mini-sidebar .footer,.mini-sidebar .page-wrapper {
+        margin-left: 60px;
+    }
+
+    .mini-sidebar .side-mini-panel {
+        width: 60px
+    }
+
+    .mini-sidebar .scroll-sidebar {
+        padding-bottom: 0;
+        position: absolute;
+        height: calc(100vh - 70px)
+    }
+
+    .mini-sidebar .scroll-sidebar .u-dropdown {
+        display: none
+    }
+}

@@ -1,0 +1,58 @@
+
+.text-themecolor {
+	color: #fff; 
+}
+
+.select {
+  font-family: 'sans-serif';
+}
+
+.table td, .table th {
+	padding: 0.3rem;
+	vertical-align: top;
+	border-top: 1px solid #dee2e6;
+}
+
+fieldset {
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding-top: 0.35em;
+	padding-bottom: 0.625em;
+	padding-left: 0.75em;
+	padding-right: 0.75em;
+	border: 2px;
+}
+
+.fontface {
+	font-family:Poppins,sans-serif;
+}
+
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+.animate-flicker {
+   -webkit-animation: flickerAnimation .5s infinite;
+   -moz-animation: flickerAnimation .5s infinite;
+   -o-animation: flickerAnimation .5s infinite;
+	animation: flickerAnimation .5s infinite;
+}
