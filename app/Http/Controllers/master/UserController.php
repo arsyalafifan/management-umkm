@@ -30,7 +30,7 @@ class UserController extends BaseController
      */
     public function index(Request $request)
     {
-        $this->authorize('view-16');
+        // $this->authorize('view-16');
 
         Log::channel('disnaker')->info('Halaman '.$this->page);
         $user = [];
@@ -41,42 +41,27 @@ class UserController extends BaseController
 
         if($request->ajax())
         {    
-            $sekolahid = $request->sekolahid;
-            $kotaid = $request->kotaid;
-            $kecamatanid = $request->kecamatanid;
-            $jenis = $request->jenis;
-            $jenjang = $request->jenjang;
-            $aksesid = $request->aksesid;
             $search = $request->search;
             $data = [];
             $count = 0;
             $page = $request->get('start', 0);  
             $perpage = $request->get('length',50);        
             try {
-                $user = DB::table('tbmuser')
-                        ->leftJoin('tbmsekolah', function($join)
-                        {
-                            $join->on('tbmsekolah.sekolahid', '=', 'tbmuser.sekolahid');
-                            $join->on('tbmsekolah.dlt','=',DB::raw("'0'"));
-                        })
+                $user = DB::table('tbuser')
                         ->leftJoin('tbmakses', function($join)
                         {
-                            $join->on('tbmakses.aksesid', '=', 'tbmuser.aksesid');
+                            $join->on('tbmakses.aksesid', '=', 'tbuser.aksesid');
                             $join->on('tbmakses.dlt','=',DB::raw("'0'"));
                         })
-                        ->select('tbmuser.*', 'tbmakses.aksesnama', DB::raw("coalesce(tbmsekolah.npsn || ' ' || tbmsekolah.namasekolah, '-') as sekolah"))
-                        ->where('tbmuser.dlt', '0')
-                        ->where(function($query) use ($kotaid, $kecamatanid, $jenis, $jenjang, $search)
+                        ->select('tbuser.*', 'tbmakses.aksesnama')
+                        ->where('tbuser.dlt', '0')
+                        ->where(function($query) use ($search)
                         {
-                            if (!is_null($kotaid) && $kotaid!='') $query->where('tbmsekolah.kotaid', $kotaid);
-                            if (!is_null($kecamatanid) && $kecamatanid!='') $query->where('tbmsekolah.kecamatanid', $kecamatanid);
-                            if (!is_null($jenis) && $jenis!='') $query->where('tbmsekolah.jenis', $jenis);
-                            if (!is_null($jenjang) && $jenjang!='') $query->where('tbmsekolah.jenjang', $jenjang);
                             if (!is_null($search) && $search!='') {
-                                $query->where(DB::raw('tbmuser.nama'), 'ilike', '%'.$search.'%');
+                                $query->where(DB::raw('tbuser.nama'), 'ilike', '%'.$search.'%');
                             }
                         })
-                        ->orderBy('tbmuser.grup');
+                        ->orderBy('tbuser.grup');
 
                 $count = $user->count();
                 $data = $user->skip($page)->take($perpage)->get();
@@ -101,17 +86,17 @@ class UserController extends BaseController
         ->orderBy('tbmakses.aksesnama')
         ->get();
 
-        $kota = DB::table('tbmkota')
-        ->select('tbmkota.kotaid', 'tbmkota.kodekota', 'tbmkota.namakota')
-        ->where('tbmkota.dlt', 0)
-        ->orderBy('tbmkota.kodekota')
-        ->get();
+        // $kota = DB::table('tbmkota')
+        // ->select('tbmkota.kotaid', 'tbmkota.kodekota', 'tbmkota.namakota')
+        // ->where('tbmkota.dlt', 0)
+        // ->orderBy('tbmkota.kodekota')
+        // ->get();
 
-        $kecamatan = DB::table('tbmkecamatan')
-        ->select('tbmkecamatan.kecamatanid', 'tbmkecamatan.kodekec', 'tbmkecamatan.namakec')
-        ->where('tbmkecamatan.dlt', 0)
-        ->orderBy('tbmkecamatan.kodekec')
-        ->get();
+        // $kecamatan = DB::table('tbmkecamatan')
+        // ->select('tbmkecamatan.kecamatanid', 'tbmkecamatan.kodekec', 'tbmkecamatan.namakec')
+        // ->where('tbmkecamatan.dlt', 0)
+        // ->orderBy('tbmkecamatan.kodekec')
+        // ->get();
 
 
 
@@ -122,8 +107,8 @@ class UserController extends BaseController
                 'createbutton' => true, 
                 'createurl' => route('user.create'), 
                 'user' => $user, 
-                'kota' => $kota, 
-                'kecamatan' => $kecamatan,
+                // 'kota' => $kota, 
+                // 'kecamatan' => $kecamatan,
                 'akses' => $akses
             ]
         );
@@ -449,8 +434,8 @@ class UserController extends BaseController
 
         $userModel->save();
 
-        // Userperusahaan::where('tbmuserperusahaan.dlt', '0')
-        //         ->where('tbmuserperusahaan.userid', $id)
+        // Userperusahaan::where('tbuserperusahaan.dlt', '0')
+        //         ->where('tbuserperusahaan.userid', $id)
         //         ->update(
         //             ['dlt' => '1', 'opedit' => $user->login, 'pcedit' => $request->ip()]
         //         );

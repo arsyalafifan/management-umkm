@@ -50,14 +50,14 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     
 <![endif]-->
-<style>
+{{-- <style>
     .login-register {
-        background: url('../assets/img/BACKGROUND_APLIKASI_foto_gub_login.jpg') center center/cover no-repeat !important;
+        background: url('../assets/img/login-bg.jpg') center center/cover no-repeat !important;
         height: 100%;
         position: fixed;
         /* background-size: 70%; */
     }
-</style>
+</style> --}}
 </head>
 
 <body class="{{ apps::gettemplate($mode, 'main_theme') }}">

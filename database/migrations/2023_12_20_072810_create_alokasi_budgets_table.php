@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBudgetManagementTable extends Migration
+class CreateAlokasiBudgetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateBudgetManagementTable extends Migration
      */
     public function up()
     {
-        Schema::create('tbbudgetmanagement', function (Blueprint $table) {
-            $table->id('budgetid');
-            $table->string('anggaran');
-            $table->string('uraiananggaran');
-            $table->string('kodeanggaran');
-            $table->string('norek');
-            $table->string('detailanggaran');
+        Schema::create('tbalokasibudget', function (Blueprint $table) {
+            $table->id('alokasibudgetid');
+            $table->foreignId('budgetid');
+            $table->string('judul');
+            $table->string('alokasibudget');
+            $table->date('tglalokasibudget');
             $table->string('opadd', 50)->nullable();
             $table->string('pcadd', 20)->nullable();
             $table->timestamp('tgladd');
@@ -37,6 +36,6 @@ class CreateBudgetManagementTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbbudgetmanagement');
+        Schema::dropIfExists('tbalokasibudget');
     }
 }

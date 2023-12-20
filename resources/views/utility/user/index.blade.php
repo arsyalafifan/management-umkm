@@ -18,69 +18,6 @@ use App\enumVar as enum;
         <h5 class="card-title text-uppercase">DAFTAR USER</h5><hr />
         <form class="form-material">
             <div class="form-group row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="kotaid" class="col-md-12 col-form-label text-md-left">{{ __('Kota / Kabupaten') }}</label>
-                        </div>
-                        <div class="col-md-9">
-                            <select id="kotaid" class="col-md-12 custom-select form-control" name='kotaid' autofocus>
-                                <option value="">-- Pilih kota --</option>
-                                @foreach ($kota as $item)
-                                <option value="{{$item->kotaid}}">{{ $item->namakota }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="kecamatanid" class="col-md-12 col-form-label text-md-left">{{ __('kecamatan') }}</label>
-                        </div>
-                        <div class="col-md-9">
-                            <select id="kecamatanid" class="col-md-12 custom-select form-control" name='kecamatanid' autofocus>
-                                <option value="">-- Pilih Kecamatan --</option>
-                                @foreach ($kecamatan as $item)
-                                    <option value="{{$item->kecamatanid}}">{{ $item->kodekec .' '. $item->namakec }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="jenis" class="col-md-12 col-form-label text-md-left">{{ __('Jenis') }}</label>
-                        </div>
-                        <div class="col-md-9">
-                            <select id="jenis" class="col-md-12 custom-select form-control" name='jenis' autofocus>
-                                <option value="">-- Pilih Jenis --</option>
-                                    <option value="{{enum::JENIS_NEGERI}}">{{  enum::JENIS_DESC_NEGERI }}</option>
-                                    <option value="{{enum::JENIS_SWASTA}}">{{  enum::JENIS_DESC_SWASTA }}</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="jenjang" class="col-md-12 col-form-label text-md-left">{{ __('Jenjang') }}</label>
-                        </div>
-                        <div class="col-md-9">
-                            <select id="jenjang" class="col-md-12 custom-select form-control" name='jenjang' autofocus>
-                                <option value="">-- Pilih Jenjang --</option>
-                                    <option value="{{enum::JENJANG_SMA}}">{{  enum::JENJANG_DESC_SMA }}</option>
-                                    <option value="{{enum::JENJANG_SMK}}">{{  enum::JENJANG_DESC_SMK }}</option>
-                                    <option value="{{enum::JENJANG_SLB}}">{{  enum::JENJANG_DESC_SLB }}</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-3">
@@ -166,8 +103,6 @@ use App\enumVar as enum;
                 data: function ( d ) {
                     return $.extend( {}, d, {
                         "search": $("#search").val().toLowerCase(),
-                        "kotaid": $("#kotaid").val().toLowerCase(),
-                        "kecamatanid": $("#kecamatanid").val().toLowerCase(),
                         
                     } );
                 }
@@ -283,27 +218,6 @@ use App\enumVar as enum;
             },
             //order: [[1, 'asc']]
         });
-
-        $('#kotaid').select2().on('change', function() {
-            var url = "{{ route('helper.getkecamatan', ':id') }}";
-            url = url.replace(':id', ($('#kotaid').val() == "" || $('#kotaid').val() == null ? "-1" : $('#kotaid').val()));
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function(data) {
-                    $('#kecamatanid').empty();
-                    $('#kecamatanid').append($("<option></option>").attr("value", "").text("-- Pilih Kecamatan --"));
-                    $.each(data.data, function(key, value) {
-                        $('#kecamatanid').append($("<option></option>").attr("value", value.kecamatanid).text(value.kodekec + ' - ' + value.namakec));
-                    });
-                    $('#kecamatanid').select2();
-                    // $('#kecamatanid').val(kecamatanid);
-                    $('#kecamatanid').trigger('change');
-
-                }
-            })
-        })
     
         $('#kotaid').change( function() { 
             usertable.draw();

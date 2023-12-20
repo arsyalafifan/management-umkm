@@ -62,43 +62,43 @@ class LoginController extends Controller
         return view('auth.login', ['tahun' => $tahun]);
     }
 
-    protected function validateLogin(Request $request)
-    {
-        // Get the user details from database and check if user is exist and active.
-        $users = DB::table('tbmuser')->where('login', $request->login)->where('dlt', 0)->get();
-        foreach($users as $user) {
-            if(!$user->isaktif){
-                Log::channel('mibedil')->error('MIBEDIL - Username tidak aktif');
-                throw ValidationException::withMessages([$this->username() => __('Username yang anda masukkan tidak aktif untuk saat ini.')]);
-            }
-        }
+    // protected function validateLogin(Request $request)
+    // {
+    //     // Get the user details from database and check if user is exist and active.
+    //     $users = DB::table('tbuser')->where('login', $request->login)->where('dlt', 0)->get();
+    //     foreach($users as $user) {
+    //         if(!$user->isaktif){
+    //             Log::channel('mibedil')->error('MIBEDIL - Username tidak aktif');
+    //             throw ValidationException::withMessages([$this->username() => __('Username yang anda masukkan tidak aktif untuk saat ini.')]);
+    //         }
+    //     }
         
-        return $request->validate(
-            [
-                $this->username() => 'required|string',
-                'password' => 'required|string',
-            ]
-        );
+    //     return $request->validate(
+    //         [
+    //             $this->username() => 'required|string',
+    //             'password' => 'required|string',
+    //         ]
+    //     );
             
             
-        // dd($users);
-        // $credentials = $request->validate([
-        //     'login' => 'required|string',
-        //     'password' => 'required',
-        // ]);
+    //     // dd($users);
+    //     // $credentials = $request->validate([
+    //     //     'login' => 'required|string',
+    //     //     'password' => 'required',
+    //     // ]);
 
-        // // $credentials = $request->only($this->username(), 'password');
-        // if (Auth::attempt($credentials)) {
-        //     // $this->sendLoginResponse($request);
-        //     // return redirect()->intended('sarpras-dashboard')->withSuccess('Signed in');
-        //     Log::channel('mibedil')->info('Login Berhasil');
-        //     return redirect()->route('sarpras-dashboard');
-        // }
+    //     // // $credentials = $request->only($this->username(), 'password');
+    //     // if (Auth::attempt($credentials)) {
+    //     //     // $this->sendLoginResponse($request);
+    //     //     // return redirect()->intended('sarpras-dashboard')->withSuccess('Signed in');
+    //     //     Log::channel('mibedil')->info('Login Berhasil');
+    //     //     return redirect()->route('sarpras-dashboard');
+    //     // }
 
-        // return redirect()->route('sarpras-dashboard');
+    //     // return redirect()->route('sarpras-dashboard');
 
-        // return redirect("login")->withSuccess('Login details are not valid');
-    }
+    //     // return redirect("login")->withSuccess('Login details are not valid');
+    // }
 
     /**
      * Send the response after the user was authenticated.
@@ -107,97 +107,97 @@ class LoginController extends Controller
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
 
-    protected function sendLoginResponse(Request $request)
-    {
-        Log::channel('mibedil')->info('Login berhasil', ['userid' => Auth::user()->userid, 'username' => Auth::user()->login]);
-        // $this->removeAttemptLogin();
-        // $wilayahid = Cookie::get('wilayahid');
+    // protected function sendLoginResponse(Request $request)
+    // {
+    //     Log::channel('mibedil')->info('Login berhasil', ['userid' => Auth::user()->userid, 'username' => Auth::user()->login]);
+    //     // $this->removeAttemptLogin();
+    //     // $wilayahid = Cookie::get('wilayahid');
         
-        $request->session()->regenerate();
+    //     $request->session()->regenerate();
 
-        // $request->session()->put('thang', $request->thang);
+    //     // $request->session()->put('thang', $request->thang);
 
-        $userdata = DB::table('tbmuser')
-                ->select('tbmuser.userid', 'tbmakses.aksesid', 'tbmakses.grup')
-                ->join('tbmakses', function($join){
-                    $join->on('tbmakses.aksesid', '=', 'tbmuser.aksesid');
-                })
-                // ->leftJoin('tbmgrupakses', function($join){
-                //     $join->on('tbmgrupakses.grupaksesid', '=', 'tbmakses.grup');
-                // })
-                ->where('tbmuser.userid', '=', DB::raw("'".Auth::user()->userid."'"))
-                ->first()
-        ;
+    //     $userdata = DB::table('tbuser')
+    //             ->select('tbuser.userid', 'tbmakses.aksesid', 'tbmakses.grup')
+    //             ->join('tbmakses', function($join){
+    //                 $join->on('tbmakses.aksesid', '=', 'tbuser.aksesid');
+    //             })
+    //             // ->leftJoin('tbmgrupakses', function($join){
+    //             //     $join->on('tbmgrupakses.grupaksesid', '=', 'tbmakses.grup');
+    //             // })
+    //             ->where('tbuser.userid', '=', DB::raw("'".Auth::user()->userid."'"))
+    //             ->first()
+    //     ;
 
-        if ($userdata !== null && $userdata->grup == enum::USER_SUPERADMIN) {
-            $akses = DB::table('tbmmenu')
-                    ->select(DB::raw("(case(tbmmenu.jenis) 
-                                when ".Config::get('constants.jenismenu.jenismenu_master')." then '".Config::get('constants.jenismenunama.jenismenunama_master')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_sarpras')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_utilitas')." then '".Config::get('constants.jenismenunama.jenismenunama_utilitas')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_verifikasi')." then '".Config::get('constants.jenismenunama.jenismenunama_verifikasi')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_perencanaan_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_perencanaan_sarpras')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_transaksi')." then '".Config::get('constants.jenismenunama.jenismenunama_transaksi')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_laporan')." then '".Config::get('constants.jenismenunama.jenismenunama_laporan')."'
-                                else '' END) AS ketjenis"), 
-                            'tbmmenu.menuid', 'tbmmenu.parent', 'tbmmenu.menu', 'tbmmenu.url', 'tbmmenu.urutan', 'tbmmenu.jenis', 'tbmmenu.ishide'
-                            )
-                    ->leftJoin('tbmuser', function($join){
-                        $join->on('tbmuser.userid', '=', DB::raw("'".Auth::user()->userid."'"));
-                    })
-                    ->leftJoin('tbmaksesmenu', function($join){
-                        $join->on('tbmaksesmenu.menuid', '=', 'tbmmenu.menuid');
-                        $join->on('tbmaksesmenu.aksesid', '=', 'tbmuser.aksesid');
-                        $join->on('tbmaksesmenu.dlt', '=', DB::raw("'0'"));
-                    })
-                    ->where('tbmmenu.ishide', '=', DB::raw("'0'"))
-                    ->orderBy('tbmmenu.jenis')
-                    ->orderBy('tbmmenu.urutan')
-                    ->get();
-        }
-        else
-        {
-            $akses = DB::table('tbmmenu')
-                    ->select(DB::raw("(case(tbmmenu.jenis) 
-                                when ".Config::get('constants.jenismenu.jenismenu_master')." then '".Config::get('constants.jenismenunama.jenismenunama_master')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_sarpras')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_utilitas')." then '".Config::get('constants.jenismenunama.jenismenunama_utilitas')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_verifikasi')." then '".Config::get('constants.jenismenunama.jenismenunama_verifikasi')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_perencanaan_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_perencanaan_sarpras')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_transaksi')." then '".Config::get('constants.jenismenunama.jenismenunama_transaksi')."'
-                                when ".Config::get('constants.jenismenu.jenismenu_laporan')." then '".Config::get('constants.jenismenunama.jenismenunama_laporan')."'
-                                else '' END) AS ketjenis"), 
-                            'tbmmenu.menuid', 'tbmmenu.parent', 'tbmmenu.menu', 'tbmmenu.url', 'tbmmenu.urutan', 'tbmmenu.jenis', 'tbmmenu.ishide'
-                            )
-                    ->join('tbmaksesmenu', function($join){
-                        $join->on('tbmaksesmenu.menuid', '=', 'tbmmenu.menuid');
-                        $join->on('tbmaksesmenu.dlt', '=', DB::raw("'0'"));
-                    })
-                    ->join('tbmuser', function($join){
-                        $join->on('tbmuser.aksesid', '=', 'tbmaksesmenu.aksesid');
-                        $join->on('tbmuser.userid', '=', DB::raw("'".Auth::user()->userid."'"));
-                    })
-                    ->where('tbmmenu.ishide', '=', DB::raw("'0'"))
-                    ->where('tbmaksesmenu.lihat', '=', DB::raw("'1'"))
-                    ->orderBy('tbmmenu.jenis')
-                    ->orderBy('tbmmenu.urutan')
-                    ->get();
-        }
+    //     if ($userdata !== null && $userdata->grup == enum::USER_SUPERADMIN) {
+    //         $akses = DB::table('tbmmenu')
+    //                 ->select(DB::raw("(case(tbmmenu.jenis) 
+    //                             when ".Config::get('constants.jenismenu.jenismenu_master')." then '".Config::get('constants.jenismenunama.jenismenunama_master')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_sarpras')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_utilitas')." then '".Config::get('constants.jenismenunama.jenismenunama_utilitas')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_verifikasi')." then '".Config::get('constants.jenismenunama.jenismenunama_verifikasi')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_perencanaan_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_perencanaan_sarpras')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_transaksi')." then '".Config::get('constants.jenismenunama.jenismenunama_transaksi')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_laporan')." then '".Config::get('constants.jenismenunama.jenismenunama_laporan')."'
+    //                             else '' END) AS ketjenis"), 
+    //                         'tbmmenu.menuid', 'tbmmenu.parent', 'tbmmenu.menu', 'tbmmenu.url', 'tbmmenu.urutan', 'tbmmenu.jenis', 'tbmmenu.ishide'
+    //                         )
+    //                 ->leftJoin('tbuser', function($join){
+    //                     $join->on('tbuser.userid', '=', DB::raw("'".Auth::user()->userid."'"));
+    //                 })
+    //                 ->leftJoin('tbmaksesmenu', function($join){
+    //                     $join->on('tbmaksesmenu.menuid', '=', 'tbmmenu.menuid');
+    //                     $join->on('tbmaksesmenu.aksesid', '=', 'tbuser.aksesid');
+    //                     $join->on('tbmaksesmenu.dlt', '=', DB::raw("'0'"));
+    //                 })
+    //                 ->where('tbmmenu.ishide', '=', DB::raw("'0'"))
+    //                 ->orderBy('tbmmenu.jenis')
+    //                 ->orderBy('tbmmenu.urutan')
+    //                 ->get();
+    //     }
+    //     else
+    //     {
+    //         $akses = DB::table('tbmmenu')
+    //                 ->select(DB::raw("(case(tbmmenu.jenis) 
+    //                             when ".Config::get('constants.jenismenu.jenismenu_master')." then '".Config::get('constants.jenismenunama.jenismenunama_master')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_sarpras')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_utilitas')." then '".Config::get('constants.jenismenunama.jenismenunama_utilitas')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_verifikasi')." then '".Config::get('constants.jenismenunama.jenismenunama_verifikasi')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_perencanaan_sarpras')." then '".Config::get('constants.jenismenunama.jenismenunama_perencanaan_sarpras')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_transaksi')." then '".Config::get('constants.jenismenunama.jenismenunama_transaksi')."'
+    //                             when ".Config::get('constants.jenismenu.jenismenu_laporan')." then '".Config::get('constants.jenismenunama.jenismenunama_laporan')."'
+    //                             else '' END) AS ketjenis"), 
+    //                         'tbmmenu.menuid', 'tbmmenu.parent', 'tbmmenu.menu', 'tbmmenu.url', 'tbmmenu.urutan', 'tbmmenu.jenis', 'tbmmenu.ishide'
+    //                         )
+    //                 ->join('tbmaksesmenu', function($join){
+    //                     $join->on('tbmaksesmenu.menuid', '=', 'tbmmenu.menuid');
+    //                     $join->on('tbmaksesmenu.dlt', '=', DB::raw("'0'"));
+    //                 })
+    //                 ->join('tbuser', function($join){
+    //                     $join->on('tbuser.aksesid', '=', 'tbmaksesmenu.aksesid');
+    //                     $join->on('tbuser.userid', '=', DB::raw("'".Auth::user()->userid."'"));
+    //                 })
+    //                 ->where('tbmmenu.ishide', '=', DB::raw("'0'"))
+    //                 ->where('tbmaksesmenu.lihat', '=', DB::raw("'1'"))
+    //                 ->orderBy('tbmmenu.jenis')
+    //                 ->orderBy('tbmmenu.urutan')
+    //                 ->get();
+    //     }
 
-        $request->session()->put('akses', $akses);
+    //     $request->session()->put('akses', $akses);
 
-        $user = Auth::user();
-        $token = $user->createToken('mibedil')->plainTextToken;
-        Session::put('tokenLogin', $token);
-        $this->clearLoginAttempts($request);
+    //     $user = Auth::user();
+    //     $token = $user->createToken('mibedil')->plainTextToken;
+    //     Session::put('tokenLogin', $token);
+    //     $this->clearLoginAttempts($request);
 
-        if ($response = $this->authenticated($request, $this->guard()->user())) {
-            return $response;
-        }
+    //     if ($response = $this->authenticated($request, $this->guard()->user())) {
+    //         return $response;
+    //     }
 
-        return $request->wantsJson() ? new JsonResponse([], 204) : redirect()->intended($this->redirectPath());
+    //     return $request->wantsJson() ? new JsonResponse([], 204) : redirect()->intended($this->redirectPath());
 
-    }
+    // }
 
     protected function sendFailedLoginResponse(Request $request)
     {
