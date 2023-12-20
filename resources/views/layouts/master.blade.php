@@ -161,7 +161,7 @@
                 <ul class="nav navbar-top-links navbar-left hidden-xs">
                     <li>
                         <a href="javascript:void(0)" class="logotext">
-                            <!--This is logo text-->APLIKASI MIBEDIL</a>
+                            <!--This is logo text-->MANAJEMEN UMKM</a>
                     </li>
                 </ul>
                 <!-- /.Logo -->
@@ -313,13 +313,13 @@
                     </div>
                 </li> --}}
 
-                @if (!session()->has('akses'))
+                {{-- @if (!session()->has('akses'))
                     <li>
                         <a class="waves-effect waves-dark" href="{{ route('login') }}">
                         <i class="ti-user"></i>
                         <span class="hide-menu">Login</span></a>
                     </li>
-                @else
+                @else --}}
                     {{-- <li class="user-pro"> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><span class="hide-menu">{{ isset(Auth::user()->nama) ? Auth::user()->nama : '' }}</span></a>
                         <ul aria-expanded="false" class="collapse">
                             <li><a href="#"><i class="ti-user"></i> Profil</a></li>
@@ -333,17 +333,17 @@
                     <li> 
                         <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
                             <i class="ti-home"></i>
-                            <span style="font-size: 12px;" class="hide-menu">Home</span>
+                            <span style="font-size: 12px;" class="hide-menu">Stock Management</span>
                         </a>
                         {{-- <ul aria-expanded="false" class="collapse"> --}}
                             {{-- <li>
                                 <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
                             </li> --}}
                             <div class="sidebarmenu">
-                                <h3 class="menu-title">Home</h3>
+                                <h3 class="menu-title">Stok Management</h3>
                                 <ul class="sidebar-menu">
                                     <li>
-                                        <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
+                                        <a class="waves-effect waves-dark" href="{{ route('stockmanagement.index') }}">Stock Management</a>
                                     </li>
                                 </ul>
                             </div>
@@ -352,7 +352,51 @@
                             </li> --}}
                         {{-- </ul> --}}
                     </li>
-                    @if (session()->has('akses'))
+                    <li> 
+                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                            <i class="ti-home"></i>
+                            <span style="font-size: 12px;" class="hide-menu">Budget Management</span>
+                        </a>
+                        {{-- <ul aria-expanded="false" class="collapse"> --}}
+                            {{-- <li>
+                                <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
+                            </li> --}}
+                            <div class="sidebarmenu">
+                                <h3 class="menu-title">Stok Management</h3>
+                                <ul class="sidebar-menu">
+                                    <li>
+                                        <a class="waves-effect waves-dark" href="{{ route('stockmanagement.index') }}">Stock Management</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {{-- <li>
+                                <a class="waves-effect waves-dark" href="{{ route('dashboard') }}">Dashboard</a>
+                            </li> --}}
+                        {{-- </ul> --}}
+                    </li>
+                    <li> 
+                        <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                            <i class="ti-home"></i>
+                            <span style="font-size: 12px;" class="hide-menu">Transaction Management</span>
+                        </a>
+                        {{-- <ul aria-expanded="false" class="collapse"> --}}
+                            {{-- <li>
+                                <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
+                            </li> --}}
+                            <div class="sidebarmenu">
+                                <h3 class="menu-title">Stok Management</h3>
+                                <ul class="sidebar-menu">
+                                    <li>
+                                        <a class="waves-effect waves-dark" href="{{ route('stockmanagement.index') }}">Stock Management</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {{-- <li>
+                                <a class="waves-effect waves-dark" href="{{ route('dashboard') }}">Dashboard</a>
+                            </li> --}}
+                        {{-- </ul> --}}
+                    </li>
+                    {{-- @if (session()->has('akses'))
                         @php
                         $iconmenu = array (
                                 "Master" =>  "ti-list",
@@ -376,26 +420,10 @@
                                     <div class="sidebarmenu">
                                         <h3 class="menu-title">{{ $akses[$counter]->ketjenis }}</h3>
                                         <ul aria-expanded="false" class="sidebar-menu">
-
-                                {{-- <li class="">
-                                    <a href="javascript:void(0)" class="has-arrow waves-effect waves-dark" aria-expanded="false">
-                                        <i class="{{ $iconmenu[$akses[$counter]->ketjenis] }}"></i>
-                                    </a>
-                                    <div class="sidebarmenu">
-                                        <!-- Left navbar-header -->
-                                        <h3 class="menu-title">Utilitas</h3>
-                                        <ul class="sidebar-menu">
-                                            <li><a href="{{ route('akses.index') }}">Hak Akses</a></li>
-                                            <li><a href="{{ route('user.index') }}">Pengguna</a></li>
-                                        </ul>
-                                        <!-- Left navbar-header end -->
-                                    </div>
-                                </li> --}}
                             @endif
                             @if ($counter == 0)
                                 @if ($counter+1 < count($akses) && $akses[$counter]->parent == $akses[$counter+1]->parent)
                                 <li> 
-                                    {{-- <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">{{ $akses[$counter]->parent }}</a> --}}
                                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">{{ $akses[$counter]->parent }}</a>
                                     <ul aria-expanded="false" class="collapse sub-menu sidebar-menu">
                                 @endif
@@ -418,8 +446,8 @@
                                 </ul></div></li>
                             @endif
                         @endfor
-                    @endif
-                @endif
+                    @endif --}}
+                {{-- @endif --}}
 
 
                 <!-- /.Dashboard -->

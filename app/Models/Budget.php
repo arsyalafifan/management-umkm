@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StockManagement extends Model
+class Budget extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbstockmanagement';
-    protected $primaryKey = 'stockid';
+    protected $table = 'tbbudget';
+    protected $primaryKey = 'budgetid';
     const CREATED_AT = 'tgladd';
     const UPDATED_AT = 'tgledit';
 
@@ -20,11 +20,10 @@ class StockManagement extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'stockid',
-        'kodestock',
-        'namastock',
-        'jumlah',
-        'harga',
+        'budgetid',
+        'rekeningid',
+        'judul',
+        'tglbudget',
         'opadd',
         'pcadd',
         'tgladd',
@@ -57,5 +56,4 @@ class StockManagement extends Model
         'tgladd' => 'datetime',
         'tgledit' => 'datetime',
     ];
-
 }

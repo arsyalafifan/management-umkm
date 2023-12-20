@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BudgetManagementController;
+use App\Http\Controllers\master\UserController;
+use App\Http\Controllers\StockManagementController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,14 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+// Route::get('/', function () {
+//     return view('home');
+// });
 
 Auth::routes();
 
-//User 
-Route::get('user/password', [UserController::class, 'password'])->name('user.password');
-Route::post('user/password', [UserController::class, 'storeubahpassword'])->name('user.password.save');
-Route::resource('user', UserController::class);
+Route::middleware(['auth'])->group(function () {
+    
+
+    Route::get('/', function() {
+        return view('dashboard');
+    })->name('management-dashboard');
+
+    Route::resource('stockmanagement', StockManagementController::class);
+    Route::resource('budgetmanagement', BudgetManagementController::class);
+
+    //User 
+    Route::get('user/password', [UserController::class, 'password'])->name('user.password');
+    Route::post('user/password', [UserController::class, 'storeubahpassword'])->name('user.password.save');
+    Route::resource('user', UserController::class);
+});
 

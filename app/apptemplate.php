@@ -9,7 +9,7 @@ class apptemplate {
                     $result = '';
                     break;
                 case 'app_alias2':
-                    $result = 'E-Database Ketenagakerjaan';
+                    $result = 'Manajemen UMKM';
                     break;
                 case 'index_theme':
                     $result = 'skin-index-blue';
@@ -89,7 +89,7 @@ class apptemplate {
                     $result = '';
                     break;
                 case 'app_alias2':
-                    $result = 'E-Database Ketenagakerjaan';
+                    $result = 'Manajemen UMKM';
                     break;
                 case 'index_theme':
                     $result = 'skin-index-maroon';
