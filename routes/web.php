@@ -31,7 +31,13 @@ Route::middleware(['auth'])->group(function () {
     })->name('management-dashboard');
 
     Route::resource('stockmanagement', StockManagementController::class);
+
     Route::resource('budgetmanagement', BudgetManagementController::class);
+    Route::post('/budgetmanagement/storerekening', [BudgetManagementController::class, 'storeRekening'])->name('budgetmanagement.storerekening');
+    Route::post('/budgetmanagement/updaterekening/{rekeningid}', [BudgetManagementController::class, 'updateRekening'])->name('budgetmanagement.updaterekening');
+    Route::get('budgetmanagement/budget/{id}', [BudgetManagementController::class,'loadBudget'])->name('budgetmanagement.loadBudget');
+    Route::post('/budgetmanagement/storebudget/{rekeningid}', [BudgetManagementController::class, 'storeBudget'])->name('budgetmanagement.storebudget');
+    Route::post('/budgetmanagement/updatebudget/{budgetid}', [BudgetManagementController::class, 'updatebudget'])->name('budgetmanagement.updatebudget');
 
     //User 
     Route::get('user/password', [UserController::class, 'password'])->name('user.password');

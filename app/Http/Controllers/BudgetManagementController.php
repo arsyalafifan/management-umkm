@@ -12,7 +12,9 @@ use App\Http\Requests\sarpras\SarprasTersedia\DetailPagu\UpdateRequest;
 use App\Http\Requests\sarpras\SarprasTersedia\DetailSarpras\CreateRequest as DetailSarprasCreateRequest;
 use App\Http\Requests\sarpras\SarprasTersedia\JenisSarpras\CreateRequest as JenisSarprasCreateRequest;
 use App\Http\Requests\sarpras\SarprasTersedia\JenisSarpras\UpdateRequest as JenisSarprasUpdateRequest;
+use App\Models\Budget;
 use App\Models\master\Sekolah;
+use App\Models\Rekening;
 use App\Models\sarpras\DetailJumlahSarpras;
 use App\Models\sarpras\DetailPaguSarprasTersedia;
 use App\Models\sarpras\DetailSarprasTersedia;
@@ -96,10 +98,10 @@ class BudgetManagementController extends BaseController
                             if (!is_null($search) && $search!='') {
                                 // $query->where(DB::raw('CONCAT(tbmkota.kodekota, tbmkota.namakota)'), 'ilike', '%'.$search.'%');
                                 // $query->where('tbmsekolah.sekolahid', auth('sanctum')->user()->sekolahid);
-                                $query->where(DB::raw('tbmsekolah.namasekolah'), 'ilike', '%'.$search.'%');
-                                $query->orWhere(DB::raw('tbtranssarprastersedia.namasarprasid'), 'ilike', '%'.$search.'%');
+                                $query->where(DB::raw('tbrekening.bank'), 'ilike', '%'.$search.'%');
+                                $query->orWhere(DB::raw('tbrekening.koderekening'), 'ilike', '%'.$search.'%');
                                 // $query->orWhere(DB::raw('(CASE WHEN '.$search.' = 1 THEN  ELSE 0 END) AS is_user'));
-                                $query->orWhere(DB::raw('tbtranssarprastersedia.jenissarpras'), 'ilike', '%'.$search.'%');
+                                $query->orWhere(DB::raw('tbrekening.saldo'), 'ilike', '%'.$search.'%');
                             }
                         })
                         ->orderBy('tbrekening.rekeningid')
@@ -361,22 +363,18 @@ class BudgetManagementController extends BaseController
      */
     public function store(Request $request)
     {
-         $this->authorize('add-12');
+        //  $this->authorize('add-12');
 
          $user = auth('sanctum')->user();
 
          try{
-             $model = new SarprasTersedia;
+             $model = new Rekening;
  
              DB::beginTransaction();
  
-             $model->jenissarpras = $request->jenissarpras;
-             $model->namasarprasid = $request->namasarprasid;
-             $model->jumlahunit = $request->jumlahunit;
-             $model->satuan = $request->satuan;
-             $model->thang = $request->thang;
-             $model->sekolahid = $request->sekolahid;
-             $model->jenisperalatanid = $request->jenisperalatanid;
+             $model->bank = $request->bank;
+             $model->koderekening = $request->koderekening;
+             $model->saldo = $request->saldo;
  
              $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
  
@@ -388,7 +386,77 @@ class BudgetManagementController extends BaseController
              return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'jenis sarpras added successfully 1.',
+                'message' => 'rekening added successfully.',
+            ], 200);
+         }catch (QueryException $e) {
+            return $this->sendError('SQL Error', $this->getQueryError($e));
+        }
+        catch (Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+    }
+    public function storeRekening(Request $request)
+    {
+        //  $this->authorize('add-12');
+
+         $user = auth('sanctum')->user();
+
+         try{
+             $model = new Rekening;
+ 
+             DB::beginTransaction();
+ 
+             $model->bank = $request->bank;
+             $model->koderekening = $request->koderekening;
+             $model->saldo = $request->saldo;
+ 
+             $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
+ 
+            //  dd($user->login);
+            $model->save();
+ 
+             DB::commit();
+ 
+             return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'rekening added successfully.',
+            ], 200);
+         }catch (QueryException $e) {
+            return $this->sendError('SQL Error', $this->getQueryError($e));
+        }
+        catch (Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+    }
+
+    public function storeBudget(Request $request, $rekeningid)
+    {
+        //  $this->authorize('add-12');
+
+         $user = auth('sanctum')->user();
+
+         try{
+             $model = new Budget;
+ 
+             DB::beginTransaction();
+ 
+             $model->judul = $request->judul;
+             $model->totalbudget = $request->totalbudget;
+             $model->tglbudget = $request->tglbudget;
+             $model->rekeningid = $rekeningid;
+ 
+             $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
+ 
+            //  dd($user->login);
+            $model->save();
+ 
+             DB::commit();
+ 
+             return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'budget added successfully.',
             ], 200);
          }catch (QueryException $e) {
             return $this->sendError('SQL Error', $this->getQueryError($e));
@@ -928,32 +996,29 @@ class BudgetManagementController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $this->authorize('edit-12');
+        // $this->authorize('edit-12');
 
         $user = auth('sanctum')->user();
 
         try {
-            $modelSarprasTersedia = SarprasTersedia::find($id);
+            $modelRekening = Rekening::find($id);
             
             DB::beginTransaction();
 
-            $modelSarprasTersedia->jenissarpras = $request->jenissarpras;
-            $modelSarprasTersedia->namasarprasid = $request->namasarprasid;
-            $modelSarprasTersedia->jumlahunit = $request->jumlahunit;
-            $modelSarprasTersedia->thang = $request->thang;
-            $modelSarprasTersedia->satuan = $request->satuan;
-            $modelSarprasTersedia->jenisperalatanid = $request->jenisperalatanid;
+            $modelRekening->bank = $request->bank;
+            $modelRekening->koderekening = $request->koderekening;
+            $modelRekening->saldo = $request->saldo;
 
-            $modelSarprasTersedia->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+            $modelRekening->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
 
-            $modelSarprasTersedia->save();
+            $modelRekening->save();
 
             DB::commit();
 
             return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'jenis sarpras updated successfully.',
+                'message' => 'rekening updated successfully.',
             ], 200);
 
         }catch(QueryException $e){
@@ -965,6 +1030,73 @@ class BudgetManagementController extends BaseController
         //         ->route('sarprastersedia.index')
         //         ->with('success', 'Data sarpras tersedia berhasil diubah.', ['page' => $this->page])
         // ;
+    }
+    public function updateRekening(Request $request, $id)
+    {
+        // $this->authorize('edit-12');
+
+        $user = auth('sanctum')->user();
+
+        try {
+            $modelRekening = Rekening::find($id);
+            
+            DB::beginTransaction();
+
+            $modelRekening->bank = $request->bank;
+            $modelRekening->koderekening = $request->koderekening;
+            $modelRekening->saldo = $request->saldo;
+
+            $modelRekening->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+
+            $modelRekening->save();
+
+            DB::commit();
+
+            return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'rekening updated successfully.',
+            ], 200);
+
+        }catch(QueryException $e){
+            return $this->sendError('SQL Error', $this->getQueryError($e));
+        }catch (Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+    }
+
+    public function updateBudget(Request $request, $id)
+    {
+        // $this->authorize('edit-12');
+
+        $user = auth('sanctum')->user();
+
+        try {
+            $modelBudget = Budget::find($id);
+            
+            DB::beginTransaction();
+
+            $modelBudget->judul = $request->judul;
+            $modelBudget->totalbudget = $request->totalbudget;
+            $modelBudget->tglbudget = $request->tglbudget;
+
+            $modelBudget->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+
+            $modelBudget->save();
+
+            DB::commit();
+
+            return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'budget updated successfully.',
+            ], 200);
+
+        }catch(QueryException $e){
+            return $this->sendError('SQL Error', $this->getQueryError($e));
+        }catch (Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
     }
 
     public function updatejenissarpras(Request $request, $id)
@@ -1341,7 +1473,7 @@ class BudgetManagementController extends BaseController
         return $this->sendResponse($sekolah, 'Sekolah retrieved successfully.');
     }
 
-    public function loadDetailSarpras(Request $request, $id)
+    public function loadBudget(Request $request, $id)
     {
         // $this->authorize('view-10');
         $user = auth('sanctum')->user();
@@ -1355,22 +1487,14 @@ class BudgetManagementController extends BaseController
             $perpage = $request->get('length',50);
 
             try {
-                $detailsarprastersedia = DB::table('tbtransdetailsarpras')
-                    // ->join('tbtransdetailpagusarpras', function($join) {
-                    //     $join->on('tbtransdetailpagusarpras.detailsarprasid', '=', 'tbtransdetailsarpras.detailsarprasid');
-                    //     $join->on('tbtransdetailpagusarpras.dlt','=',DB::raw("'0'"));
-                    // })
-                    ->join('tbmsubkeg', function($join) {
-                        $join->on('tbmsubkeg.subkegid', '=', 'tbtransdetailsarpras.subkegid');
-                        $join->on('tbmsubkeg.dlt','=',DB::raw("'0'"));
-                    })
-                    ->select('tbtransdetailsarpras.*', 'tbmsubkeg.subkegid', 'tbmsubkeg.subkegnama')
-                    ->where('tbtransdetailsarpras.sarprastersediaid', $id)
-                    ->where('tbtransdetailsarpras.dlt', '0')
-                    ->orderBy('tbtransdetailsarpras.detailsarprasid')
+                $budget = DB::table('tbbudget')
+                    ->select('tbbudget.*')
+                    ->where('tbbudget.rekeningid', $id)
+                    ->where('tbbudget.dlt', '0')
+                    ->orderBy('tbbudget.budgetid')
                 ;
-                $count = $detailsarprastersedia->count();
-                $data = $detailsarprastersedia->skip($page)->take($perpage)->get();
+                $count = $budget->count();
+                $data = $budget->skip($page)->take($perpage)->get();
             } catch (QueryException $e) {
                 return $this->sendError('SQL Error', $this->getQueryError($e));
             }
@@ -1381,7 +1505,7 @@ class BudgetManagementController extends BaseController
             return $this->sendResponse([
                 'data' => $data,
                 'count' => $count
-            ], 'detail sarpras tersedia retrieved successfully.'); 
+            ], 'Budget retrieved successfully.'); 
         }
     }
 
