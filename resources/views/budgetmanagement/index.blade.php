@@ -138,11 +138,11 @@ use App\enumVar as enum;
                 @endif --}}
                 
                 <div class="table-responsive">
-                    <table class="table table-bordered yajra-datatable table-striped" id="jenis-sarpras-tersedia-table">
+                    <table class="table table-bordered yajra-datatable table-striped" id="rekening-table">
                         <thead>
                             <tr>
-                                <th>Kode Rekening</th>
                                 <th>Bank</th>
+                                <th>Kode Rekening</th>
                                 <th>Saldo</th>
                             </tr>
                         </thead>
@@ -178,11 +178,12 @@ use App\enumVar as enum;
                 @endif --}}
                 
                 <div class="table-responsive">
-                    <table class="table table-bordered yajra-datatable table-striped" id="detail-sarpras-table">
+                    <table class="table table-bordered yajra-datatable table-striped" id="budget-table">
                         <thead>
                             <tr>
-                                <th>Kegiatan</th>
-                                <th>Sumber Dana</th>
+                                <th>Judul Budget</th>
+                                <th>Total Budget</th>
+                                <th>Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -321,8 +322,8 @@ use App\enumVar as enum;
     </div>
 </div>
 
-<!-- modal jenis sarpras -->
-<div class="modal" id="modal-jenis-sarpras" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+<!-- modal rekening -->
+<div class="modal" id="modal-rekening" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
     <div class="modal-dialog modal-lg" style="max-width: 1200px;" role="document">
         <div class="modal-content p-3">
             <div class="modal-header d-flex">
@@ -330,42 +331,16 @@ use App\enumVar as enum;
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <form id="jenissarprasForm" name="jenissarprasForm" method="POST" class="form-horizontal form-material needs-validation" enctype="multipart/form-data">
+                <form id="rekeningForm" name="rekeningForm" method="POST" class="form-horizontal form-material needs-validation" enctype="multipart/form-data">
                     @csrf
                     {{-- {{ method_field('PUT') }} --}}
-                    <input type="hidden" name="jenissarpras" id="jenissarpras_mode">
-                    <input type="hidden" name="sekolahid" id="jenissarpras_sekolahid">
+                    <input type="hidden" name="rekening" id="rekening_mode">
                     <div class="form-group row">
-                        <label for="jenissarpras" class="col-md-12 col-form-label text-md-left">{{ __('Jenis Sarpras Tersedia *') }}</label>
-    
+                        <label for="bank" class="col-md-12 col-form-label text-md-left">{{ __('Bank *') }}</label>
                         <div class="col-md-12">
-                            <select id="jenissarpras_jenissarpras" class="custom-select1 form-control @error('jenissarpras') is-invalid @enderror" name='jenissarpras' required>
-                                <option value="">-- Pilih Jenis Sarpras Tersedia --</option>
-                                <option {{ old('jenissarpras') != '' && old('jenissarpras') == enum::SARPRAS_UTAMA ? 'selected' : '' }} value="{{ enum::SARPRAS_UTAMA }}">{{ __('Sarpras Utama') }}</option>
-                                <option {{ old('jenissarpras') != '' && old('jenissarpras') == enum::SARPRAS_PENUNJANG ? 'selected' : '' }} value="{{ enum::SARPRAS_PENUNJANG }}">{{ __('Sarpras Penunjang') }}</option>
-                                <option {{ old('jenissarpras') != '' && old('jenissarpras') == enum::SARPRAS_PERALATAN ? 'selected' : '' }} value="{{ enum::SARPRAS_PERALATAN }}">{{ __('Sarpras Peralatan') }}</option>
-                            </select>
+                            <input id="rekening_bank" type="text" class="form-control @error('bank') is-invalid @enderror" name="bank" value="{{ (old('bank')) }}" maxlength="100" required autocomplete="bank">
     
-                            @error('jenissarpras')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-    
-                    <div class="form-group row">
-                        <label for="namasarprasid" class="col-md-12 col-form-label text-md-left">{{ __('Nama Sarpras *') }}</label>
-    
-                        <div class="col-md-12">
-                            <select id="jenissarpras_namasarprasid" class="custom-select1 form-control @error('namasarpras') is-invalid @enderror" name='namasarprasid' required>
-                                <option value="">-- Pilih Nama Sarpras --</option>
-                                {{-- @foreach ($namasarpras as $item)
-                                <option value="{{$item->namasarprasid}}">{{ $item->namasarpras }}</option>
-                                @endforeach --}}
-                            </select>
-    
-                            @error('namasarpras')
+                            @error('bank')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -374,75 +349,96 @@ use App\enumVar as enum;
                     </div>
 
                     <div class="form-group row">
-                        <label for="jenisperalatanid" class="col-md-12 col-form-label text-md-left">{{ __('Jenis Peralatan *') }}</label>
-    
+                        <label for="koderekening" class="col-md-12 col-form-label text-md-left">{{ __('Kode Rekening *') }}</label>
                         <div class="col-md-12">
-                            <select id="jenissarpras_jenisperalatanid" class="custom-select1 form-control @error('jenisperalatan') is-invalid @enderror" name='jenisperalatanid' disabled>
-                                <option value="">-- Pilih Jenis Peralatan --</option>
-                                
-                            </select>
+                            <input id="rekening_koderekening" type="text" class="form-control @error('koderekening') is-invalid @enderror" name="koderekening" value="{{ (old('koderekening')) }}" maxlength="100" required autocomplete="koderekening">
     
-                            @error('jenisperalatan')
+                            @error('koderekening')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label for="saldo" class="col-md-12 col-form-label text-md-left">{{ __('Saldo *') }}</label>
+                        <div class="col-md-12">
+                            <input id="rekening_saldo" type="text" class="form-control @error('saldo') is-invalid @enderror" name="saldo" value="{{ (old('saldo')) }}" maxlength="100" required autocomplete="saldo">
     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="jumlah" class="col-md-12 col-form-label text-md-left">{{ __('Jumlah Unit *') }}</label>
-                                <div class="col-md-12">
-                                    <input id="jenissarpras_jumlahunit" type="number" class="form-control @error('jumlahunit') is-invalid @enderror" name="jumlahunit" value="{{ (old('jumlahunit')) }}" maxlength="100" required autocomplete="jumlahunit">
-            
-                                    @error('jumlahunit')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            {{-- <div class="col-md-3"> --}}
-                                <div class="form-group">
-                                    <label for="satuan" class="col-md-12 col-form-label text-md-left">{{ __('Satuan *') }}</label>
-                
-                                    <div class="col-md-12">
-                                        <input id="jenissarpras_satuan" type="text" class="form-control @error('satuan') is-invalid @enderror" name="satuan" value="{{ (old('satuan')) }}" maxlength="100" required autocomplete="satuan">
-                
-                                        @error('satuan')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            {{-- </div> --}}
+                            @error('saldo')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                     </div>
-    
-                    {{-- <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="thang" class="col-md-12 col-form-label text-md-left">{{ __('Tahun Anggaran *') }}</label>
-    
-                                <div class="col-md-12">
-                                    <select id="jenissarpras_thang" class="custom-select1 form-control @error('thang') is-invalid @enderror" name='thang' required>
-                                        <option value="">-- Tahun Anggaran --</option>
-                                        @foreach (enum::listTahun() as $id)
-                                            <option value="{{ $id }}"> {{ enum::listTahun('desc')[$loop->index] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button value="btnSubmit" type="submit" id="btnSubmit" class="btn btn-primary btnSubmit"><i class="icon wb-plus" aria-hidden="true"></i>Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal budget -->
+<div class="modal" id="modal-budget" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+    <div class="modal-dialog modal-lg" style="max-width: 1200px;" role="document">
+        <div class="modal-content p-3">
+            <div class="modal-header d-flex">
+                <h4 class="modal-title-budget" id="modal-title-budget"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form id="budgetForm" name="budgetForm" method="POST" class="form-horizontal form-material needs-validation" enctype="multipart/form-data">
+                    @csrf
+                    {{-- {{ method_field('PUT') }} --}}
+                    <input type="hidden" name="budget" id="budget_mode">
+                    <div class="form-group row">
+                        <label for="judul" class="col-md-12 col-form-label text-md-left">{{ __('Judul *') }}</label>
+                        <div class="col-md-12">
+                            <input id="budget_judul" type="text" class="form-control @error('judul') is-invalid @enderror" name="judul" value="{{ (old('judul')) }}" maxlength="100" required autocomplete="judul">
+    
+                            @error('judul')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="totalbudget" class="col-md-12 col-form-label text-md-left">{{ __('Total Budget *') }}</label>
+                        <div class="col-md-12">
+                            <input id="budget_totalbudget" type="text" class="form-control @error('totalbudget') is-invalid @enderror" name="totalbudget" value="{{ (old('totalbudget')) }}" maxlength="100" required autocomplete="totalbudget">
+    
+                            @error('totalbudget')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="tglbudget" class="col-md-12 col-form-label text-md-left">{{ __('Tanggal *') }}</label>
+                        <div class="col-md-12">
+                            <input id="budget_tglbudget" type="date" class="form-control @error('tglbudget') is-invalid @enderror" name="tglbudget" value="{{ (old('tglbudget')) }}" maxlength="100" required autocomplete="tglbudget">
+    
+                            @error('tglbudget')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button value="btnSubmitBudget" type="submit" id="btnSubmitBudget" class="btn btn-primary btnSubmitBudget"><i class="icon wb-plus" aria-hidden="true"></i>Simpan
                         </button>
                     </div>
                 </form>
@@ -461,7 +457,7 @@ use App\enumVar as enum;
             </div>
             <form method="POST" class="form-horizontal form-material m-t-40 needs-validation" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="sarprastersediaid" id="sarprastersediaid">
+                <input type="hidden" name="rekeningid" id="rekeningid">
                 <div class="row m-b-40">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -620,62 +616,45 @@ use App\enumVar as enum;
     // $('div.dataTables_filter').addClass('form-material');
     $(document).ready(function () {
 
-        // $('#jenissarpras_jenissarpras').select2().on('change', function() {
+        // $('#rekening_jenissarpras').select2().on('change', function() {
         //     setComboDisable();
         //     setupCombosProp();
         // })
 
         function setComboDisable(){
-            $('#jenissarpras_jenisperalatanid').prop('disabled', true);
+            $('#rekening_jenisperalatanid').prop('disabled', true);
         }
 
         function setupCombosProp(){
             // $('#grup').val($('#aksesid').find(":selected").data("grup"));
-            if ($('#jenissarpras_jenissarpras').val() == "{{enum::SARPRAS_PERALATAN}}") {
-                $('#jenissarpras_jenisperalatanid').prop('disabled', false);
-                $('#jenissarpras_jenisperalatanid').val('').trigger('change');
+            if ($('#rekening_jenissarpras').val() == "{{enum::SARPRAS_PERALATAN}}") {
+                $('#rekening_jenisperalatanid').prop('disabled', false);
+                $('#rekening_jenisperalatanid').val('').trigger('change');
             }else {
-                $('#jenissarpras_jenisperalatanid').prop('disabled', true);
-                $('#jenissarpras_jenisperalatanid').val('').trigger('change');
+                $('#rekening_jenisperalatanid').prop('disabled', true);
+                $('#rekening_jenisperalatanid').val('').trigger('change');
             }
         }
 
-        // verifikasi kebutuhan sarpras 
-        $(document).on('submit', '#jenissarprasForm', function(e){
+        // HANDLE SUBMIT REKENING
+        $(document).on('submit', '#rekeningForm', function(e){
             e.preventDefault();
             var url = '';
             var type = '';
             var id = '';
 
-            // var data = {};
             
-            // $('input[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            //     var inputname = el.id.substring(13, el.id.length);
-            //     if (inputname != "mode") {
-            //         data[inputname] = $("#"+el.id).val();
-            //     }
-            // });
-            // $('select[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            //     var inputname = el.id.substring(13, el.id.length);
-            //     if (inputname != "mode") {
-            //         data[inputname] = $("#"+el.id).val();
-            //     }
-            // });
-
-            // console.log(data);
-
-            
-            if($("#jenissarpras_mode").val() == 'add') {
-                url = "{{-- route('sarprastersedia.storejenissarpras') --}}";
+            if($("#rekening_mode").val() == 'add') {
+                url = "{{ route('budgetmanagement.storerekening') }}";
                 type = 'POST'
                 // url = url.replace(':id', id);   
-            }else if($("#jenissarpras_mode").val() == "edit") {
-                url = "{{-- route('sarprastersedia.updatejenissarpras', ':id') --}}";
-                id = jenisSarprasTersediaTable.rows( { selected: true } ).data()[0]['sarprastersediaid'];
+            }else if($("#rekening_mode").val() == "edit") {
+                url = "{{ route('budgetmanagement.updaterekening', ':id') }}";
+                id = rekeningTable.rows( { selected: true } ).data()[0]['rekeningid'];
                 url = url.replace(':id', id); 
                 type = 'POST'
             }
-            var formData = new FormData($('#jenissarprasForm')[0]);
+            var formData = new FormData($('#rekeningForm')[0]);
             
             $.ajax({
                 type: type,
@@ -694,23 +673,65 @@ use App\enumVar as enum;
                     // let errors = json.errors;
 
                     if (success == 'true' || success == true) {
-                            swal.fire("Berhasil!", "Data jenis sarpras berhasil ditambah.", "success");
-                            // kebutuhansarprastable.draw();
-                            // jenissarprasFormtable.draw();
-                            // var rowData = detailanggarantable.rows({ selected: true }).data()[0]; // Get selected row data
-                            // var detailpenganggaranid = rowData.detailpenganggaranid;
-                            // showDetailPaguPenganggaran(detailpenganggaranid);
-                            jenisSarprasTersediaTable.draw();
+                            swal.fire("Berhasil!", "Data rekening berhasil ditambah.", "success");
 
-                            $('#jenissarprasForm').trigger("reset");
-                            $('#modal-jenis-sarpras').modal('hide'); 
+                            rekeningTable.draw();
+
+                            $('#rekeningForm').trigger("reset");
+                            $('#modal-rekening').modal('hide'); 
                     }
                 },
-                // error: function(jqXHR, textStatus, errorThrown) {
-                //         var data = jqXHR.responseJSON;
-                //         console.log(data.errors);// this will be the error bag.
-                //         // printErrorMsg(data.errors);
-                //     }
+            })
+        })
+
+        // HANDLE SUBMIT BUDGET
+        $(document).on('submit', '#budgetForm', function(e){
+            e.preventDefault();
+            var url = '';
+            var type = '';
+            var id = '';
+            var rekeningid = rekeningTable.rows( { selected: true } ).data()[0]['rekeningid'];
+
+            
+            if($("#budget_mode").val() == 'add') {
+                url = "{{ route('budgetmanagement.storebudget', ':rekeningid') }}";
+                url = url.replace(':rekeningid', rekeningid);
+                type = 'POST'
+                // url = url.replace(':id', id);   
+            }else if($("#budget_mode").val() == "edit") {
+                url = "{{ route('budgetmanagement.updatebudget', ':id') }}";
+                id = budgetTable.rows( { selected: true } ).data()[0]['budgetid'];
+                url = url.replace(':id', id); 
+                type = 'POST'
+            }
+            var formData = new FormData($('#budgetForm')[0]);
+            
+            $.ajax({
+                type: type,
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                // data: data,
+                contentType: false,
+                processData: false,
+                success: (json) => {
+                    let success = json.success;
+                    let message = json.message;
+                    let data = json.data;
+                    // let errors = json.errors;
+
+                    if (success == 'true' || success == true) {
+                            swal.fire("Berhasil!", "Data rekening berhasil ditambah.", "success");
+
+                            // rekeningTable.draw();
+                            loadBudget(rekeningid)
+
+                            $('#budgetForm').trigger("reset");
+                            $('#modal-budget').modal('hide'); 
+                    }
+                },
             })
         })
 
@@ -719,55 +740,43 @@ use App\enumVar as enum;
         $('.custom-select').select2();
 
         $('.custom-select1').select2({
-            dropdownParent: $('#modal-jenis-sarpras .modal-content')
+            dropdownParent: $('#modal-rekening .modal-content')
         });
 
         // Get namasarpras when jenis sarpras selected
-        $('#jenissarpras_jenissarpras').select2().on('change', function() {
+        $('#rekening_jenissarpras').select2().on('change', function() {
             setComboDisable();
             setupCombosProp();
             var url = "{{-- route('sarprastersedia.getNamaSarpras', ':parentid') --}}";
-            url = url.replace(':parentid', ($('#jenissarpras_jenissarpras').val() == "" || $('#jenissarpras_jenissarpras').val() == null ? "-1" : $('#jenissarpras_jenissarpras').val()));
+            url = url.replace(':parentid', ($('#rekening_jenissarpras').val() == "" || $('#rekening_jenissarpras').val() == null ? "-1" : $('#rekening_jenissarpras').val()));
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function(data) {
-                    $('#jenissarpras_namasarprasid').empty();
-                    $('#jenissarpras_namasarprasid').append($("<option></option>").attr("value", "").text("-- Pilih Nama Sarpras --"));
+                    $('#rekening_namasarprasid').empty();
+                    $('#rekening_namasarprasid').append($("<option></option>").attr("value", "").text("-- Pilih Nama Sarpras --"));
                     $.each(data.data, function(key, value) {
-                        $('#jenissarpras_namasarprasid').append($("<option></option>").attr("value", value.namasarprasid).text(value.namasarpras));
+                        $('#rekening_namasarprasid').append($("<option></option>").attr("value", value.namasarprasid).text(value.namasarpras));
                     });
-                    $('#jenissarpras_namasarprasid').select2();
+                    $('#rekening_namasarprasid').select2();
                     // $('#sekolahid').val(sekolahid);
-                    var namasarprasid = jenisSarprasTersediaTable.rows( { selected: true } ).data()[0]['namasarprasid'];
-                    if ($('#jenissarpras_mode').val() == 'edit') {
-                        $('#jenissarpras_namasarprasid').val(namasarprasid);
+                    var namasarprasid = rekeningTable.rows( { selected: true } ).data()[0]['namasarprasid'];
+                    if ($('#rekening_mode').val() == 'edit') {
+                        $('#rekening_namasarprasid').val(namasarprasid);
                     }
-                    $('#jenissarpras_namasarprasid').trigger('change');
+                    $('#rekening_namasarprasid').trigger('change');
                 }
             })
         })
 
-        // START HANDLE MODAL JENIS SARPRAS FORM
+    // START HANDLE MODAL REKENING
 
     function resetformdetail() {
-        $("#jenissarprasForm")[0].reset();
-        // var v_max = 1;
-        // if (v_listDataDetail.length > 0) {
-        //     var v_maxobj = v_listDataDetail.reduce((prev, current) => (prev && prev.nourut > current.nourut) ? prev : current);
-        //     v_max = parseInt(v_maxobj.nourut)+1;
-        // }
-        // $("#detail_detail_nourut").val(v_max);
-        //alert(v_listDataDetail.length);
-        //alert(v_listDataDetail.length + '->' + JSON.stringify(max));
+        $("#rekeningForm")[0].reset();
 
-        // $('span[id^="err_detail_detail_"]', "#jenissarprasForm").each(function(index, el){
-        //     $('#'+el.id).html("");
-        // });
-
-        $('select[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            var inputname = el.id.substring(13, el.id.length);
+        $('select[id^="rekening_"]', "#rekeningForm").each(function(index, el){
+            var inputname = el.id.substring(9, el.id.length);
             if (inputname != "mode") {
                 $("#"+el.id).val("").trigger('change');
             }
@@ -775,40 +784,29 @@ use App\enumVar as enum;
     }
 
     function bindformdetail() {
-        $('textarea[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            var inputname = el.id.substring(13, el.id.length);
+        $('textarea[id^="rekening_"]', "#rekeningForm").each(function(index, el){
+            var inputname = el.id.substring(9, el.id.length);
             //alert(inputname);
             if (inputname != "mode") {
-                $("#"+el.id).val(jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname]);
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]);
             }
         });
         
-        $('input[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            // if(el.type != 'file') {
-            //     var inputname = el.id.substring(13, el.id.length);
-            //     //alert(inputname);
-            //     if (inputname != "mode") {
-            //         if((inputname == 'nilaikontrak' && jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname] != null) || (inputname == 'nilaipagu' && jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname] != null)){
-            //             $("#"+el.id).val(formatRupiah(jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname]));
-            //         }else {
-            //             $("#"+el.id).val(jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname]);
-            //         }
-            //     }
-            // }
+        $('input[id^="rekening_"]', "#rekeningForm").each(function(index, el){
 
-            var inputname = el.id.substring(13, el.id.length);
+            var inputname = el.id.substring(9, el.id.length);
             //alert(inputname);
             if (inputname != "mode") {
-                $("#"+el.id).val(jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname]);
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]);
                 console.log(inputname);
             }
         });
         
-        $('select[id^="jenissarpras_"]', "#jenissarprasForm").each(function(index, el){
-            var inputname = el.id.substring(13, el.id.length);
+        $('select[id^="rekening_"]', "#rekeningForm").each(function(index, el){
+            var inputname = el.id.substring(9, el.id.length);
             //alert(inputname);
             if (inputname != "mode") {
-                $("#"+el.id).val(jenisSarprasTersediaTable.rows( { selected: true } ).data()[0][inputname]).trigger('change');
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]).trigger('change');
             }
         });
     }
@@ -833,9 +831,9 @@ use App\enumVar as enum;
     }
 
     var v_modejenissarpras = "";
-    function showmodaljenissarpras(mode) {
+    function showmodalrekening(mode) {
         v_modejenissarpras = mode;
-        $("#jenissarpras_mode").val(mode);
+        $("#rekening_mode").val(mode);
         resetformdetail();
         if (mode == "add") {
             $("#modal-title-jenis-sarpras").html('Tambah Data');
@@ -860,12 +858,102 @@ use App\enumVar as enum;
         $("#m_formshowdetail").modal('hide');
     }
 
-    // END HANDLE MODAL JENIS SARPRAS FORM
+    // END HANDLE MODAL REKENING
 
-        var detailSarprasTable;
+    // START HANDLE MODAL BUDGET
+
+    function resetformbudget() {
+        $("#budgetForm")[0].reset();
+
+        $('select[id^="budget_"]', "#budgetForm").each(function(index, el){
+            var inputname = el.id.substring(7, el.id.length);
+            if (inputname != "mode") {
+                $("#"+el.id).val("").trigger('change');
+            }
+        });
+    }
+
+    function bindformbudget() {
+        $('textarea[id^="budget_"]', "#budgetForm").each(function(index, el){
+            var inputname = el.id.substring(7, el.id.length);
+            //alert(inputname);
+            if (inputname != "mode") {
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]);
+            }
+        });
+        
+        $('input[id^="budget_"]', "#budgetForm").each(function(index, el){
+
+            var inputname = el.id.substring(7, el.id.length);
+            //alert(inputname);
+            if (inputname != "mode") {
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]);
+                console.log(inputname);
+            }
+        });
+        
+        $('select[id^="budget_"]', "#budgetForm").each(function(index, el){
+            var inputname = el.id.substring(7, el.id.length);
+            //alert(inputname);
+            if (inputname != "mode") {
+                $("#"+el.id).val(rekeningTable.rows( { selected: true } ).data()[0][inputname]).trigger('change');
+            }
+        });
+    }
+
+    function setenabledbudget(value) {
+        if (value) {
+            $("#btnSubmit").show();
+        }
+        else {
+            $("#btnSubmit").hide();
+        }
+        
+        $('textarea[id^="budget_"]', "#tambahDetailPaguSarpras").each(function(index, el){
+            $("#"+el.id).prop("readonly", !value);
+        });
+        $('input[id^="budget_"]', "#tambahDetailPaguSarpras").each(function(index, el){
+            $("#"+el.id).prop("readonly", !value);
+        });
+        $('select[id^="budget_"]', "#tambahDetailPaguSarpras").each(function(index, el){
+            $("#"+el.id).prop("disabled", !value);
+        });
+    }
+
+    var v_modebudget = "";
+    function showmodalbudget(mode) {
+        v_modebudget = mode;
+        $("#budget_mode").val(mode);
+        resetformbudget();
+        if (mode == "add") {
+            $("#modal-title-budget").html('Tambah Data');
+            setenabledbudget(true);
+            // console.log($("#detail_mode").val());
+        }
+        else if (mode == "edit") {
+            $("#modal-title-budget").html('Ubah Data');
+            bindformdetail();
+            setenabledbudget(true);
+        }
+        else {
+            $("#modal-title-budget").html('Lihat Data');
+            bindformdetail();
+            setenabledbudget(false);
+        }
+        
+        $("#modal-budget").modal('show');
+    }
+
+    function hidemodalbudget() {
+        $("#m_formshowdetail").modal('hide');
+    }
+
+    // END HANDLE MODAL BUDGET
+
+        var budgetTable;
         var detailJumlahSarprasTable;
     
-        var jenisSarprasTersediaTable = $('#jenis-sarpras-tersedia-table').DataTable({
+        var rekeningTable = $('#rekening-table').DataTable({
             responsive: true,
             processing: true,
             serverSide: true,
@@ -920,9 +1008,9 @@ use App\enumVar as enum;
                             // url = url.replace(':id', id);
                             // window.location.href = url;
 
-                            $('#modal-jenis-sarpras').modal('show');
-                            showmodaljenissarpras('add');
-                            $('#jenissarpras_sekolahid').val($('#sekolahid').val());
+                            $('#modal-rekening').modal('show');
+                            showmodalrekening('add');
+                            $('#rekening_sekolahid').val($('#sekolahid').val());
 
                         }
                     }
@@ -931,27 +1019,27 @@ use App\enumVar as enum;
                     text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Ubah',
                     className: 'edit btn btn-warning mb-3 btn-datatable',
                     action: function () {
-                        if (jenisSarprasTersediaTable.rows( { selected: true } ).count() <= 0) {
+                        if (rekeningTable.rows( { selected: true } ).count() <= 0) {
                             swal.fire("Data belum dipilih", "Silahkan pilih data yang akan diubah", "error");
                             return;
                         }
-                        var id = jenisSarprasTersediaTable.rows( { selected: true } ).data()[0]['sarprastersediaid'];
+                        var id = rekeningTable.rows( { selected: true } ).data()[0]['rekeningid'];
                         var url = "{{-- route('sarprastersedia.edit', ':id') --}}"
                         // url = url.replace(':id', id);
                         // window.location = url;
 
-                        $('#modal-jenis-sarpras').modal('show');
-                        showmodaljenissarpras('edit');
+                        $('#modal-rekening').modal('show');
+                        showmodalrekening('edit');
                     }
                 }, {
                     text: '<i class="fa fa-trash" aria-hidden="true"></i> Hapus',
                     className: 'edit btn btn-danger mb-3 btn-datatable',
                     action: function () {
-                        if (jenisSarprasTersediaTable.rows( { selected: true } ).count() <= 0) {
+                        if (rekeningTable.rows( { selected: true } ).count() <= 0) {
                             swal.fire("Data belum dipilih", "Silahkan pilih data yang akan dihapus", "error");
                             return;
                         }
-                        var id = jenisSarprasTersediaTable.rows( { selected: true } ).data()[0]['sarprastersediaid'];
+                        var id = rekeningTable.rows( { selected: true } ).data()[0]['rekeningid'];
                         var url = "{{-- route('sarprastersedia.destroy', ':id') --}}"
                         url = url.replace(':id', id);
                         swal.fire({   
@@ -985,7 +1073,7 @@ use App\enumVar as enum;
                                         
                                         if (success == 'true' || success == true) {
                                             swal.fire("Berhasil!", "Data anda telah dihapus.", "success"); 
-                                            jenisSarprasTersediaTable.draw();
+                                            rekeningTable.draw();
                                         }
                                         else {
                                             swal.fire("Error!", data, "error"); 
@@ -998,19 +1086,19 @@ use App\enumVar as enum;
                 }]
             },
             columns: [
-                {'orderData': 1, data: 'koderekening', name: 'koderekening'},
-                {'orderData': 2, data: 'bank',
-                render: function ( data, type, row ) {
+                {'orderData': 1, data: 'bank',
+                    render: function ( data, type, row ) {
                         if(row.bank!=null){
                             return row.bank;
                         }else
                         return "-";
                     }, 
                     name: 'bank'},
-                    {'orderData': 3, data: 'saldo', name: 'saldo',
+                {'orderData': 2, data: 'koderekening', name: 'koderekening'},
+                {'orderData': 3, data: 'saldo', name: 'saldo',
                     render: function(data, type, row) {
                         if(row.saldo != null) {
-                            return row.saldo;
+                            return rupiah(row.saldo);
                         }
                         else {
                             return "-"
@@ -1026,9 +1114,9 @@ use App\enumVar as enum;
 
 
         // $('#kotaid').change( function() { 
-        //     jenisSarprasTersediaTable.draw();
+        //     rekeningTable.draw();
         //     // hide detail sarpras table table
-        //     $('#detail-sarpras-table').hide();
+        //     $('#budget-table').hide();
         //     $('#detail-jumlah-sarpras-table').hide();
         //     // sekolahtable.draw();
         //     if (this.value) {
@@ -1058,9 +1146,9 @@ use App\enumVar as enum;
         //     }
         // });
         // $('#kecamatanid').change( function() { 
-        //     jenisSarprasTersediaTable.draw();
+        //     rekeningTable.draw();
         //     // hide detail sarpras table table
-        //     $('#detail-sarpras-table').hide();
+        //     $('#budget-table').hide();
         //     $('#detail-jumlah-sarpras-table').hide();
         //     // sekolahtable.draw();
         //     var jenis = $('#jenis').val();
@@ -1098,29 +1186,29 @@ use App\enumVar as enum;
         //     }
         // });
         $('#sekolahid').change( function() { 
-            jenisSarprasTersediaTable.draw();
+            rekeningTable.draw();
             // hide detail sarpras table table
-            $('#detail-sarpras-table').hide();
+            $('#budget-table').hide();
             $('#detail-jumlah-sarpras-table').hide();
         });
 
         // $('#jenis').select2().on('change', function() {
 
-        //     jenisSarprasTersediaTable.draw();
+        //     rekeningTable.draw();
 
         // });
 
         // $('#jenis').change( function() { 
-        //     jenisSarprasTersediaTable.draw();
+        //     rekeningTable.draw();
         //     // hide detail sarpras table table
-        //     $('#detail-sarpras-table').hide();
+        //     $('#budget-table').hide();
         //     $('#detail-jumlah-sarpras-table').hide();
         // });
 
         // $('#jenjang').change( function() { 
-        //     jenisSarprasTersediaTable.draw();
+        //     rekeningTable.draw();
         //     // hide detail sarpras table table
-        //     $('#detail-sarpras-table').hide();
+        //     $('#budget-table').hide();
         //     $('#detail-jumlah-sarpras-table').hide();
         // });
 
@@ -1133,39 +1221,35 @@ use App\enumVar as enum;
         
         $('#search').on('keyup', function (e) {
             if (e.key === 'Enter' || e.keyCode === 13) {
-                jenisSarprasTersediaTable.draw();
-                $('#detail-sarpras-table').hide();
+                rekeningTable.draw();
+                $('#budget-table').hide();
                 $('#detail-jumlah-sarpras-table').hide();
             }
         });
 
-        function loadDetailSarpras(sarprastersediaid) {
-            var url = "{{-- route('sarprastersedia.loadDetailSarpras', ':id') --}}";
-            url = url.replace(':id', sarprastersediaid);
+        function loadBudget(rekeningid) {
+            var url = "{{ route('budgetmanagement.loadBudget', ':id') }}";
+            url = url.replace(':id', rekeningid);
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
 
-                    detailSarprasTable.clear();
+                    budgetTable.clear();
 
                     for (var i = 0; i < response.data.count; i++) {
-                        detailSarprasTable.row.add({
-                            subkegid: response.data.data[i].subkegid,
-                            subkegnama: response.data.data[i].subkegnama,
-                            sumberdana: response.data.data[i].sumberdana,
-                            jenispagu: response.data.data[i].jenispagu,
-                            nilaipagu: response.data.data[i].nilaipagu,
-                            tglpelaksanaan: response.data.data[i].tglpelaksanaan,
-                            file: response.data.data[i].file,
-                            detailsarprasid: response.data.data[i].detailsarprasid,
-                            detailpagusarprasid: response.data.data[i].detailpagusarprasid,
+                        budgetTable.row.add({
+                            budgetid: response.data.data[i].budgetid,
+                            rekeningid: response.data.data[i].rekeningid,
+                            judul: response.data.data[i].judul,
+                            tglbudget: response.data.data[i].tglbudget,
+                            totalbudget: response.data.data[i].totalbudget,
                         });
                     }
 
-                    detailSarprasTable.draw();
-                    $('#detail-sarpras-table').show();
+                    budgetTable.draw();
+                    $('#budget-table').show();
                     $('#detail-jumlah-sarpras-table').hide();
                 },
                 error: function (error) {
@@ -1175,25 +1259,25 @@ use App\enumVar as enum;
         }
 
         // Listen for row selection event on legalisir-table
-        jenisSarprasTersediaTable.on('select', function (e, dt, type, indexes) {
-            var rowData = jenisSarprasTersediaTable.rows(indexes).data()[0]; // Get selected row data
-            var sarprastersediaid = rowData.sarprastersediaid;
+        rekeningTable.on('select', function (e, dt, type, indexes) {
+            var rowData = rekeningTable.rows(indexes).data()[0]; // Get selected row data
+            var rekeningid = rowData.rekeningid;
             var namasarpras = rowData.namasarpras;
 
             $('#detail-sarpras-title').html(`detail sarpras ${namasarpras}`)
 
-            // Load history table with selected sarprastersediaid
-            loadDetailSarpras(sarprastersediaid);
+            // Load history table with selected rekeningid
+            loadBudget(rekeningid);
         });
 
-        jenisSarprasTersediaTable.on('deselect', function ( e, dt, type, indexes ) {
+        rekeningTable.on('deselect', function ( e, dt, type, indexes ) {
             $('#detail-sarpras-title').html(`detail sarpras`)
             // hide histiry table
-            $('#detail-sarpras-table').hide();
+            $('#budget-table').hide();
             $('#detail-jumlah-sarpras-table').hide();
         });
 
-        var detailSarprasTable = $('#detail-sarpras-table').DataTable({
+        var budgetTable = $('#budget-table').DataTable({
             responsive: true,
             processing: true,
             serverSide: false,
@@ -1220,18 +1304,19 @@ use App\enumVar as enum;
                     text: '<i class="fa fa-plus-circle aria-hidden="true"></i> Tambah',
                     className: 'edit btn btn-primary mb-3 btn-datatable',
                     action: function () {
-                        if (jenisSarprasTersediaTable.rows( {selected: true} ).count() <= 0) {
+                        if (rekeningTable.rows( {selected: true} ).count() <= 0) {
                             swal.fire("Jenis Sarpras belum dipilih", "Silakan pilih jenis sarpras terlebih dahulu", "error");
                             return;
                         }
                         else{
-                            var rowData = jenisSarprasTersediaTable.rows( {selected: true} ).data()[0]; // Get selected row data
-                            var sarprastersediaid = rowData.sarprastersediaid;
-                            var url = "{{--  route('sarprastersedia.createDetailSarpras', ['sarprastersediaid' => ':id']) --}}";
-                            url = url.replace(':id', sarprastersediaid);
-                            window.location.href = url;
+                            var rowData = rekeningTable.rows( {selected: true} ).data()[0]; // Get selected row data
+                            var rekeningid = rowData.rekeningid;
+                            var url = "{{--  route('sarprastersedia.createDetailSarpras', ['rekeningid' => ':id']) --}}";
+                            url = url.replace(':id', rekeningid);
+                            // window.location.href = url;
 
                             // $('#modal-detail-sarpras').modal('show');
+                            showmodalbudget('add');
                         }
                     }
                 },
@@ -1240,12 +1325,12 @@ use App\enumVar as enum;
                     className: 'edit btn btn-info mb-3 btn-datatable',
                     action: function() {
 
-                        if (detailSarprasTable.rows( { selected: true } ).count() <= 0) {
+                        if (budgetTable.rows( { selected: true } ).count() <= 0) {
                             swal.fire("Data belum dipilih", "Silakan pilih data yang ingin dilihat", "error");
                             return;
                         }
                         else{
-                            var rowData = detailSarprasTable.rows({ selected: true }).data()[0]; // Get selected row data
+                            var rowData = budgetTable.rows({ selected: true }).data()[0]; // Get selected row data
                             var detailsarprasid = rowData.detailsarprasid;
                             // var detailpagusarprasid = rowData.detailpagusarprasid;
                             console.log(detailsarprasid);
@@ -1258,12 +1343,12 @@ use App\enumVar as enum;
                     text: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Ubah',
                     className: 'edit btn btn-warning mb-3 btn-datatable',
                     action: function () {
-                        if (detailSarprasTable.rows( { selected: true } ).count() <= 0) {
+                        if (budgetTable.rows( { selected: true } ).count() <= 0) {
                             swal.fire("Data belum dipilih", "Silahkan pilih data yang akan diubah", "error");
                             return;
                         }
-                        // var id = detailSarprasTable.rows( { selected: true } ).data()[0]['detailsaprasid'];
-                        var rowData = detailSarprasTable.rows({ selected: true }).data()[0]; // Get selected row data
+                        // var id = budgetTable.rows( { selected: true } ).data()[0]['detailsaprasid'];
+                        var rowData = budgetTable.rows({ selected: true }).data()[0]; // Get selected row data
                         var id = rowData.detailsarprasid;
                         var url = "{{-- route('sarprastersedia.editDetailSarpras', ':id') --}}"
                         url = url.replace(':id', id);
@@ -1273,14 +1358,14 @@ use App\enumVar as enum;
                     text: '<i class="fa fa-trash" aria-hidden="true"></i> Hapus',
                     className: 'edit btn btn-danger mb-3 btn-datatable',
                     action: function () {
-                        if (detailSarprasTable.rows( { selected: true } ).count() <= 0) {
+                        if (budgetTable.rows( { selected: true } ).count() <= 0) {
                             swal.fire("Data belum dipilih", "Silahkan pilih data yang akan dihapus", "error");
                             return;
                         }
-                        var id = detailSarprasTable.rows( { selected: true } ).data()[0]['detailsarprasid'];
+                        var id = budgetTable.rows( { selected: true } ).data()[0]['detailsarprasid'];
                         var url = "{{-- route('sarprastersedia.destroyDetailSarpras', ':id') --}}"
                         url = url.replace(':id', id);
-                        // var nama =  detailSarprasTable.rows( { selected: true } ).data()[0]['namasekolah'];
+                        // var nama =  budgetTable.rows( { selected: true } ).data()[0]['namasekolah'];
                         swal.fire({   
                             title: "Apakah anda yakin akan menghapus data ini?",   
                             text: "Data yang terhapus tidak dapat dikembalikan lagi!",   
@@ -1312,10 +1397,10 @@ use App\enumVar as enum;
                                         
                                         if (success == 'true' || success == true) {
                                             swal.fire("Berhasil!", "Data anda telah dihapus.", "success"); 
-                                            // detailSarprasTable.draw();
-                                            var rowData = jenisSarprasTersediaTable.rows( {selected: true} ).data()[0]; // Get selected row data
-                                            var sarprastersediaid = rowData.sarprastersediaid;
-                                            loadDetailSarpras(sarprastersediaid);
+                                            // budgetTable.draw();
+                                            var rowData = rekeningTable.rows( {selected: true} ).data()[0]; // Get selected row data
+                                            var rekeningid = rowData.rekeningid;
+                                            loadBudget(rekeningid);
                                         }
                                         else {
                                             swal.fire("Error!", data, "error"); 
@@ -1330,12 +1415,21 @@ use App\enumVar as enum;
             },
 
             columns: [
-                {'orderData': 1, data: 'subkegid', name: 'subkegid', 
+                {'orderData': 1, data: 'judul', name: 'judul', 
                     render: function(data, type, row){
-                        return row.subkegnama;
+                        return row.judul;
                     }
                 },
-                {'orderData': 2, data: 'sumberdana', name: 'sumberdana'},
+                {'orderData': 2, data: 'totalbudget', name: 'totalbudget', 
+                    render: function(data, type, row){
+                        return rupiah(row.totalbudget);
+                    }
+                },
+                {'orderData': 3, data: 'tglbudget', name: 'tglbudget',
+                    render: function(data, type, row){
+                        return DateFormat(row.tglbudget);
+                    }
+                },
             ],
             initComplete: function (settings, json) {
                 $(".btn-datatable").removeClass("dt-button");
@@ -1344,7 +1438,7 @@ use App\enumVar as enum;
         });
 
         // hide detail jumlah sarpras table table
-        $('#detail-sarpras-table').hide();
+        $('#budget-table').hide();
         function loadDetailJumlahSarpras(detailsarprasid) {
             var url = "{{-- route('sarprastersedia.loadDetailJumlahSarpras', ':id') --}}";
             url = url.replace(':id', detailsarprasid);
@@ -1375,8 +1469,8 @@ use App\enumVar as enum;
         }
 
         // Listen for row selection event on legalisir-table
-        detailSarprasTable.on('select', function (e, dt, type, indexes) {
-            var rowData = detailSarprasTable.rows(indexes).data()[0]; // Get selected row data
+        budgetTable.on('select', function (e, dt, type, indexes) {
+            var rowData = budgetTable.rows(indexes).data()[0]; // Get selected row data
             var detailsarprasid = rowData.detailsarprasid;
             var detailpagusarprasid = rowData.detailpagusarprasid;
             console.log(detailsarprasid);
@@ -1386,7 +1480,7 @@ use App\enumVar as enum;
             loadDetailJumlahSarpras(detailsarprasid);
         });
 
-        detailSarprasTable.on('deselect', function ( e, dt, type, indexes ) {
+        budgetTable.on('deselect', function ( e, dt, type, indexes ) {
             // hide histiry table
             $('#detail-jumlah-sarpras-table').hide();
         });
@@ -1419,12 +1513,12 @@ use App\enumVar as enum;
                     text: '<i class="fa fa-plus-circle aria-hidden="true"></i> Tambah',
                     className: 'edit btn btn-primary mb-3 btn-datatable',
                     action: function () {
-                        if (detailSarprasTable.rows( {selected: true} ).count() <= 0) {
+                        if (budgetTable.rows( {selected: true} ).count() <= 0) {
                             swal.fire("Detail sarpras belum dipilih", "Silakan pilih detail sarpras terlebih dahulu", "error");
                             return;
                         }
                         else{
-                            var rowData = detailSarprasTable.rows( {selected: true} ).data()[0]; // Get selected row data
+                            var rowData = budgetTable.rows( {selected: true} ).data()[0]; // Get selected row data
                             var detailsarprasid = rowData.detailsarprasid;
                             var url = "{{-- route('sarprastersedia.createDetailJumlahSarpras', ['detailsarprasid' => ':id']) --}}";
                             url = url.replace(':id', detailsarprasid);
@@ -1493,7 +1587,7 @@ use App\enumVar as enum;
                                         
                                         if (success == 'true' || success == true) {
                                             swal.fire("Berhasil!", "Data anda telah dihapus.", "success"); 
-                                            var rowData = detailSarprasTable.rows( {selected: true} ).data()[0]; // Get selected row data
+                                            var rowData = budgetTable.rows( {selected: true} ).data()[0]; // Get selected row data
                                             var detailsarprasid = rowData.detailsarprasid;
                                             // detailJumlahSarprasTable.draw();
                                             loadDetailJumlahSarpras(detailsarprasid);
