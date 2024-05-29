@@ -101,7 +101,7 @@ class apptemplate {
                     $result = 'logo-sipd.png';
                     break;
                 case 'comp_name':
-                    $result = 'Dinas Pendidikan Kepri';
+                    $result = 'Resto and Cafe Rasta';
                     break;
                 case 'comp_alias':
                     $result = 'Disdik Kepri';

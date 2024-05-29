@@ -206,18 +206,18 @@ use App\enumVar as enum;
                             swal.fire("Data belum dipilih", "Silahkan pilih data yang akan diubah", "error");
                             return;
                         }
-                        let status = stockmanagementable.rows( { selected: true } ).data()[0]['status']
+                        // let status = stockmanagementable.rows( { selected: true } ).data()[0]['status']
 
-                        if(status == 3){
-                            swal.fire('Error!', 'Tidak dapat mengubah data yang sudah berstatus DISETUJUI', 'error');
-                        }else if(status == 5) {
-                            swal.fire('Error!', 'Tidak dapat mengubah data yang sudah berstatus PROSES TENDER', 'error');
-                        }else{
-                            var id = stockmanagementable.rows( { selected: true } ).data()[0]['sarpraskebutuhanid'];
-                            var url = "{{ route('stockmanagement.edit', ':id') }}"
-                            url = url.replace(':id', id);
-                            window.location = url;
-                        }
+                        // if(status == 3){
+                        //     swal.fire('Error!', 'Tidak dapat mengubah data yang sudah berstatus DISETUJUI', 'error');
+                        // }else if(status == 5) {
+                        //     swal.fire('Error!', 'Tidak dapat mengubah data yang sudah berstatus PROSES TENDER', 'error');
+                        // }else{
+                        var id = stockmanagementable.rows( { selected: true } ).data()[0]['stockid'];
+                        var url = "{{ route('stockmanagement.edit', ':id') }}"
+                        url = url.replace(':id', id);
+                        window.location = url;
+                        // }
                     }
                 }, 
                 {
@@ -231,14 +231,14 @@ use App\enumVar as enum;
 
                         let status = stockmanagementable.rows( { selected: true } ).data()[0]['status']
 
-                        if (status == 2) {
-                            swal.fire('Error!', 'Data yang sedang dalam pengajuan tidak dapat dihapus', 'error');
-                        }else if(status == 3) {
-                            swal.fire('Error!', 'Tidak dapat menghapus, data telah disetujui pada verifikasi permintaan sarpras', 'error');
-                        }else if(status == 5) {
-                            swal.fire('Error!', 'Tidak dapat menghapus, data sudah berstatus proses tender', 'error');
-                        }else {
-                            var id = stockmanagementable.rows( { selected: true } ).data()[0]['sarpraskebutuhanid'];
+                        // if (status == 2) {
+                        //     swal.fire('Error!', 'Data yang sedang dalam pengajuan tidak dapat dihapus', 'error');
+                        // }else if(status == 3) {
+                        //     swal.fire('Error!', 'Tidak dapat menghapus, data telah disetujui pada verifikasi permintaan sarpras', 'error');
+                        // }else if(status == 5) {
+                        //     swal.fire('Error!', 'Tidak dapat menghapus, data sudah berstatus proses tender', 'error');
+                        // }else {
+                            var id = stockmanagementable.rows( { selected: true } ).data()[0]['stockid'];
                             var url = "{{ route('stockmanagement.destroy', ':id') }}"
                             url = url.replace(':id', id);
                             // var nama =  stockmanagementable.rows( { selected: true } ).data()[0]['namasekolah'];
@@ -282,7 +282,7 @@ use App\enumVar as enum;
                                     });  
                                 }           
                             });
-                        }
+                        // }
                     }
                 }]
             },

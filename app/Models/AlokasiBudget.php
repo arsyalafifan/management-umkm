@@ -24,6 +24,7 @@ class AlokasiBudget extends Model
         'budgetid',
         'judul',
         'tglalokasibudget',
+        'statusrealisasi',
         'opadd',
         'pcadd',
         'tgladd',

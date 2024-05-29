@@ -25,34 +25,33 @@ use App\enumVar as enum;
             </p>
             @endif
 
-            <form method="POST" action="{{ route('sarpraskebutuhan.update', $sarpraskebutuhan->sarpraskebutuhanid) }}" class="form-horizontal form-material m-t-40 needs-validation" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('stockmanagement.update', $stock->stockid) }}" class="form-horizontal form-material m-t-40 needs-validation" enctype="multipart/form-data">
                 @csrf
                 {{ method_field('PUT') }}
-                <input type="hidden" name="sekolahid" id="sekolahid" value="{{ old('sekolahid',$sarpraskebutuhan->sekolahid) }}">
-                <input type="hidden" name="sarpraskebutuhanid" id="sarpraskebutuhanid" value="{{ $sarpraskebutuhan->sarpraskebutuhanid }}">
-
                 <div class="row">
                     <div class="col-md-6">
+                        <input type="hidden" name="stockid" id="stockid" value="{{ !is_null($stock->stockid) ? $stock->stockid : '' }}">
                         <div class="form-group">
-                            <label for="nopengajuan" class="col-md-12 col-form-label text-md-left">{{ __('Nomor Pengajuan *') }}</label>
+                            <label for="kodestock" class="col-md-12 col-form-label text-md-left">{{ __('Kode Stock *') }}</label>
         
                             <div class="col-md-12">
-                                <input id="nopengajuan" type="text" class="form-control @error('nopengajuan') is-invalid @enderror" name="nopengajuan" value="{{ (old('nopengajuan')) ?? $sarpraskebutuhan->nopengajuan }}" maxlength="100" required autocomplete="nopengajuan" autofocus>
+                                <input id="kodestock" type="text" class="form-control @error('kodestock') is-invalid @enderror" name="kodestock" value="{{ (old('kodestock') ?? $stock->stockid) }}" maxlength="100" required autocomplete="kodestock" autofocus>
         
-                                @error('nopengajuan')
+                                @error('kodestock')
                                     <span class="invalid-feedback" role="alert">
                                         {{ $message }}
                                     </span>
                                 @enderror
                             </div>
                         </div>
+
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="tglpengajuan" class="col-md-12 col-form-label text-md-left">{{ __('Tanggal Pengajuan *') }}</label>
+                            <label for="namastock" class="col-md-12 col-form-label text-md-left">{{ __('Nama Stock *') }}</label>
                             <div class="col-md-12">
-                                <input type="date" class="form-control @error('tglpengajuan') is-invalid @enderror" id="tglpengajuan" name="tglpengajuan" value="{{ old('tglpengajuan') ?? $sarpraskebutuhan->tglpengajuan }}" required>
-                                @error('tglpengajuan')
+                                <input type="text" class="form-control @error('namastock') is-invalid @enderror" id="namastock" name="namastock" value="{{ old('namastock') ?? $stock->namastock }}" required>
+                                @error('namastock')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -65,169 +64,81 @@ use App\enumVar as enum;
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="jeniskebutuhan" class="col-md-12 col-form-label text-md-left">{{ __('Jenis Kebutuhan *') }}</label>
-                            <div class="col-md-12">
-                                <select id="jeniskebutuhan" class="custom-select form-control @error('jeniskebutuhan') is-invalid @enderror" name='jeniskebutuhan' required>
-                                    <option value="">-- Jenis Kebutuhan --</option>
-                                    @foreach (enum::listJenisKebutuhan() as $id)
-                                        <option {{ $sarpraskebutuhan->jeniskebutuhan == $id ? 'selected' : '' }} value="{{ $id }}"> {{ enum::listJenisKebutuhan('desc')[$loop->index] }}</option>
-                                    @endforeach
-                                </select>
-                                @error('jeniskebutuhan')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="kepalasekolah" class="col-md-12 col-form-label text-md-left">{{ __('Kepala Sekolah *') }}</label>
-        
-                            <div class="col-md-12">
-                                <select id="pegawaiid" class="custom-select form-control @error('pegawai') is-invalid @enderror" name='pegawaiid' required>
-                                    <option value="">-- Pilih Kepala Sekolah --</option>
-                                    @foreach ($pegawai as $item)
-                                    <option {{ $sarpraskebutuhan->pegawaiid == $item->pegawaiid ? 'selected' : '' }} value="{{$sarpraskebutuhan->pegawaiid}}">{{ 'NIP: ' . $item->nip . ' | NAMA: ' . $item->nama }}</option>
-                                    @endforeach
-                                </select>
-        
-                                @error('pegawaiid')
-                                    <span class="invalid-feedback" role="alert">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="jenissarpras" class="col-md-12 col-form-label text-md-left">{{ __('Jenis Sarpras Tersedia *') }}</label>
-        
-                            <div class="col-md-12">
-                                <select id="jenissarpras" class="custom-select form-control @error('jenissarpras') is-invalid @enderror" name='jenissarpras' required>
-                                    <option value="">-- Pilih Jenis Sarpras Tersedia --</option>
-                                    <option {{ $sarpraskebutuhan->jenissarpras == enum::SARPRAS_UTAMA ? 'selected' : '' }} value="{{ enum::SARPRAS_UTAMA }}">{{ __('Sarpras Utama') }}</option>
-                                    <option {{ $sarpraskebutuhan->jenissarpras == enum::SARPRAS_PENUNJANG ? 'selected' : '' }} value="{{ enum::SARPRAS_PENUNJANG }}">{{ __('Sarpras Penunjang') }}</option>
-                                    <option {{ $sarpraskebutuhan->jenissarpras == enum::SARPRAS_PERALATAN ? 'selected' : '' }} value="{{ enum::SARPRAS_PERALATAN }}">{{ __('Sarpras Peralatan') }}</option>
-                                </select>
-        
-                                @error('jenissarpras')
-                                    <span class="invalid-feedback" role="alert">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
                             <label for="jumlah" class="col-md-12 col-form-label text-md-left">{{ __('Jumlah *') }}</label>
-        
                             <div class="col-md-12">
-                                <input id="jumlah" type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ (old('jumlah')) ?? $sarpraskebutuhan->jumlah }}" maxlength="100" required autocomplete="jumlah">
-        
+                                <input type="text" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" value="{{ old('jumlah') ?? $stock->jumlah }}" required>
                                 @error('jumlah')
-                                    <span class="invalid-feedback" role="alert">
-                                        {{ $message }}
-                                    </span>
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
                                 @enderror
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="satuan" class="col-md-12 col-form-label text-md-left">{{ __('Satuan *') }}</label>
-        
-                            <div class="col-md-12">
-                                <input id="satuan" type="text" class="form-control @error('satuan') is-invalid @enderror" name="satuan" value="{{ (old('satuan')) ?? $sarpraskebutuhan->satuan }}" maxlength="100" required autocomplete="satuan">
-        
-                                @error('satuan')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="namasarpras" class="col-md-12 col-form-label text-md-left">{{ __('Nama Sarpras *') }}</label>
-        
+                            <label for="harga" class="col-md-12 col-form-label text-md-left">{{ __('Harga *') }}</label>
                             <div class="col-md-12">
-                                <select id="namasarprasid" class="custom-select form-control @error('namasarpras') is-invalid @enderror" name='namasarprasid' required>
-                                    <option value="">-- Pilih Nama Sarpras --</option>
-                                    @foreach ($namasarpras as $item)
-                                    <option {{ $sarpraskebutuhan->namasarprasid == $item->namasarprasid ? 'selected' : '' }} value="{{$item->namasarprasid}}">{{ $item->namasarpras }}</option>
-                                    @endforeach
-                                </select>
-        
-                                @error('namasarpras')
-                                    <span class="invalid-feedback" role="alert">
-                                        {{ $message }}
-                                    </span>
+                                <input type="text" class="form-control @error('harga') is-invalid @enderror" id="harga" name="harga" value="{{ old('harga') ?? $stock->harga }}" required>
+                                @error('harga')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
                                 @enderror
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="thang" class="col-md-12 col-form-label text-md-left">{{ __('Tahun Anggaran *') }}</label>
+                {{-- <h4 class="card-title text-uppercase text-bold m-t-40">Upload Foto Stock</h4><hr /> --}}
 
-                            <div class="col-md-12">
-                                <select id="thang" class="custom-select form-control @error('thang') is-invalid @enderror" name='thang' required>
-                                    <option value="">-- Tahun Anggaran --</option>
-                                    @foreach (enum::listTahun() as $id)
-                                        <option {{ $sarpraskebutuhan->thang == $id ? 'selected' : '' }} value="{{ $id }}"> {{ enum::listTahun('desc')[$loop->index] }}</option>
-                                    @endforeach
-                                </select>
-
-                                @error('thang')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                {{-- <table id="demo-foo-addrow-sarprastersedia" class="table table-bordered table-hover toggle-circle" data-page-size="7">
+                    <thead style="background-color: #d8d8d868;">
+                        <tr>
+                            <th data-sort-initial="true" data-toggle="true">Upload File</th>
+                            <th data-sort-ignore="true" data-toggle="true">Preview</th>
+                            <th data-sort-ignore="true" data-toggle="true">Hapus</th>
+                        </tr>
+                    </thead>
+                    <div class="padding-bottom-15">
+                        <div class="row">
+                            <div class="col-sm-12 text-right m-b-5">
+                                <button type="button" id="demo-btn-addrow-sarprastersedia" class="btn btn-primary"><i class="fldemo glyphicon glyphicon-plus"></i> Tambah
+                                </button>
                             </div>
+                            
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h3 class="box-title text-uppercase m-b-0">Detail Kebutuhan Sarpras</h3><hr />
-                        {{-- <p class="text-muted m-b-20">Klik Tambah Master Plan Sekolah untuk menambah data </p> --}}
-                        <div class="table-responsive">
-                            <table class="table table-bordered yajra-datatable table-striped" id="sarpras-kebutuhan-table">
-                                <thead>
-                                    <tr>
-                                        <th>File</th>
-                                        <th>Foto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                    <tbody id="tbody-sarprastersedia" style="font-weight: 300;">
+                        <tr>
+                            <td class="border-0">
+                                <input type="file" class="form-control file-input" name="file[]" required /><span style="font-size: 12px" class="help-block">Format: JPG, JPEG, PNG | Max: 2MB</spanv>
+                            </td>
+                            <td class="border-0">
+                                <div class="param_img_holder d-flex justify-content-center align-items-center">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <div class="text-right">
+                                    <ul class="pagination">
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table> --}}
 
                 <div class="form-group row mb-0">
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-info waves-effect waves-light m-r-10">
                             {{ __('Simpan') }}
                         </button>
-                        <a href="{{ route('sarpraskebutuhan.index') }}" class="btn btn-primary waves-effect waves-light m-r-10">
-                            {{ __('Index Sarpras Kebutuhan') }}
+                        <a href="{{ route('stockmanagement.index') }}" class="btn btn-primary waves-effect waves-light m-r-10">
+                            {{ __('Kembali') }}
                         </a>
                         {{-- <a href="{{ route('home') }}" class="btn btn-dark waves-effect waves-light m-r-10">
                             {{ __('Home') }}
@@ -250,7 +161,7 @@ use App\enumVar as enum;
                                 <ul></ul>
                             </div>
                             @csrf
-                                <input type="hidden" name="sarpraskebutuhanid" value={{ $sarpraskebutuhan->sarpraskebutuhanid }} id="sarpraskebutuhanid"/>
+                                <input type="hidden" name="sarpraskebutuhanid" value={{-- $sarpraskebutuhan->sarpraskebutuhanid --}} id="sarpraskebutuhanid"/>
                                 <div class="form-group">
                                     <label for="filesarpraskebutuhan" class="control-label">File:</label>
                                     <input type="file" name="filesarpraskebutuhan" class="form-control" id="filesarpraskebutuhan">
@@ -281,7 +192,7 @@ use App\enumVar as enum;
                             </div>
                             <form method="POST" id="editDetailSarprasKebutuhan" name="editDetailSarprasKebutuhan" class="form-horizontal form-material needs-validation" enctype="multipart/form-data">
                             @csrf
-                                <input type="hidden" name="sarpraskebutuhanid" value={{ $sarpraskebutuhan->sarpraskebutuhanid }} id="sarpraskebutuhanid"/>
+                                <input type="hidden" name="sarpraskebutuhanid" value={{-- $sarpraskebutuhan->sarpraskebutuhanid --}} id="sarpraskebutuhanid"/>
                                 <div class="form-group">
                                     <label for="filesarpraskebutuhan" class="control-label">File:</label>
                                     <input type="file" name="filesarpraskebutuhan" class="form-control" id="filesarpraskebutuhan">
@@ -315,7 +226,7 @@ use App\enumVar as enum;
        
        let formData = new FormData($('#tambahDetailSarprasKebutuhan')[0]);
 
-       let url = "{{ route('sarpraskebutuhan.storedetailsarpraskebutuhan') }}"
+       let url = "{{-- route('sarpraskebutuhan.storedetailsarpraskebutuhan') --}}"
 
        $.ajax({
            type: 'POST',
@@ -357,7 +268,7 @@ use App\enumVar as enum;
        
        let formData = new FormData($('#editDetailSarprasKebutuhan')[0]);
 
-       let url = "{{ route('sarpraskebutuhan.updatedetailsarpraskebutuhan', ':id') }}"
+       let url = "{{-- route('sarpraskebutuhan.updatedetailsarpraskebutuhan', ':id') --}}"
        url = url.replace(':id', id);
 
        $.ajax({
@@ -403,7 +314,7 @@ use App\enumVar as enum;
         });
     }
    
-   var url = "{{ route('sarpraskebutuhan.edit', ':id') }}"
+   var url = "{{-- route('sarpraskebutuhan.edit', ':id') --}}"
    url = url.replace(':id', $('#sarpraskebutuhanid').val());
    var sarpraskebutuhantable = $('#sarpras-kebutuhan-table').DataTable({
        responsive: true,
@@ -470,7 +381,7 @@ use App\enumVar as enum;
                        return;
                    }
                    let id = sarpraskebutuhantable.rows( { selected: true } ).data()[0]['filesarpraskebutuhanid'];
-                   let url = "{{ route('sarpraskebutuhan.hapusdetailsarpraskebutuhan', ':id') }}"
+                   let url = "{{-- route('sarpraskebutuhan.hapusdetailsarpraskebutuhan', ':id') --}}"
                    url = url.replace(':id', id);
                    swal.fire({   
                        title: "Apakah anda yakin akan menghapus file sarpras kebutuhan ini?",   
@@ -521,7 +432,7 @@ use App\enumVar as enum;
                        return;
                    }
                    let id = sarpraskebutuhantable.rows( { selected: true } ).data()[0]['filesarpraskebutuhanid'];
-                   let url = "{{ route('sarpraskebutuhan.downloadfilesarpraskebutuhan', ':id') }}"
+                   let url = "{{-- route('sarpraskebutuhan.downloadfilesarpraskebutuhan', ':id') --}}"
                    url = url.replace(':id', id);
                    console.log(url);
                    let today = new Date();
@@ -606,7 +517,7 @@ use App\enumVar as enum;
     $(document).ready(function() {
         $('.custom-select').select2();
 
-        // var url = "{{ route('sarpraskebutuhan.nextno') }}"
+        // var url = "{{-- route('sarpraskebutuhan.nextno') --}}"
         // // url = url.replace(':parentid', $('#kecamatanid').val());
         // $.ajax({
         //     url:url,
@@ -621,7 +532,7 @@ use App\enumVar as enum;
                 $('#kodekec').val('');
             }
             else {
-                var url = "{{ route('kecamatan.nextno', ':parentid') }}"
+                var url = "{{-- route('kecamatan.nextno', ':parentid') --}}"
                 url = url.replace(':parentid', $('#kotaid').val());
                 $.ajax({
                     url:url,
@@ -634,7 +545,7 @@ use App\enumVar as enum;
         }).trigger('change');
 
         $('#jenissarpras').select2().on('change', function() {
-            var url = "{{ route('sarpraskebutuhan.getNamaSarpras', ':parentid') }}";
+            var url = "{{-- route('sarpraskebutuhan.getNamaSarpras', ':parentid') --}}";
             url = url.replace(':parentid', ($('#jenissarpras').val() == "" || $('#jenissarpras').val() == null ? "-1" : $('#jenissarpras').val()));
 
             $.ajax({
