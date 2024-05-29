@@ -362,10 +362,10 @@
                                 <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
                             </li> --}}
                             <div class="sidebarmenu">
-                                <h3 class="menu-title">Stok Management</h3>
+                                <h3 class="menu-title">Budget Management</h3>
                                 <ul class="sidebar-menu">
                                     <li>
-                                        <a class="waves-effect waves-dark" href="{{ route('stockmanagement.index') }}">Stock Management</a>
+                                        <a class="waves-effect waves-dark" href="{{ route('budgetmanagement.index') }}">Budget Management</a>
                                     </li>
                                 </ul>
                             </div>
@@ -384,10 +384,10 @@
                                 <a class="waves-effect waves-dark" href="{{ route('index') }}">Halaman Awal</a>
                             </li> --}}
                             <div class="sidebarmenu">
-                                <h3 class="menu-title">Stok Management</h3>
+                                <h3 class="menu-title">Transaction Management</h3>
                                 <ul class="sidebar-menu">
                                     <li>
-                                        <a class="waves-effect waves-dark" href="{{ route('stockmanagement.index') }}">Stock Management</a>
+                                        <a class="waves-effect waves-dark" href="{{ route('transactionmanagement.index') }}">Transaction Management</a>
                                     </li>
                                 </ul>
                             </div>

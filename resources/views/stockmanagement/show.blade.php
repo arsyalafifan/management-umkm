@@ -186,44 +186,44 @@ use App\enumVar as enum;
        },
        buttons: {
            buttons: [
-           {
-               text: '<i class="fa fa-download" aria-hidden="true"></i> Download',
-               className: 'edit btn btn-success btn-datatable mb-3',
-               action: () => {
-                   if (fototable.rows( { selected: true } ).count() <= 0) {
-                       swal.fire("Data belum dipilih", "Silahkan pilih data yang akan didownload", "error");
-                       return;
-                   }
-                   let id = fototable.rows( { selected: true } ).data()[0]['filestockid'];
-                   let url = ""
-                   url = url.replace(':id', id);
-                   console.log(url);
-                   let today = new Date();
-                   let dateTime = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+ "_"+today.getHours() + today.getMinutes() + today.getSeconds();
-                   let namaFile = `SARPRAS_KEBUTUHAN_${dateTime}`
-                   $.ajax({
-                           type: "GET",
-                           cache:false,
-                           processData: false,
-                           contentType: false,
-                           // defining the response as a binary file
-                           xhrFields: {
-                               responseType: 'blob' 
-                           },  
-                           url: url,
-                           success: (data) => {
-                               let a = document.createElement('a');
-                               let url = window.URL.createObjectURL(data);
-                               a.href = url;
-                               a.download = namaFile;
-                               document.body.append(a);
-                               a.click();
-                               a.remove();
-                               window.URL.revokeObjectURL(url);
-                           }
-                   });
-               }
-           },
+        //    {
+        //        text: '<i class="fa fa-download" aria-hidden="true"></i> Download',
+        //        className: 'edit btn btn-success btn-datatable mb-3',
+        //        action: () => {
+        //            if (fototable.rows( { selected: true } ).count() <= 0) {
+        //                swal.fire("Data belum dipilih", "Silahkan pilih data yang akan didownload", "error");
+        //                return;
+        //            }
+        //            let id = fototable.rows( { selected: true } ).data()[0]['filestockid'];
+        //            let url = ""
+        //            url = url.replace(':id', id);
+        //            console.log(url);
+        //            let today = new Date();
+        //            let dateTime = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+ "_"+today.getHours() + today.getMinutes() + today.getSeconds();
+        //            let namaFile = `SARPRAS_KEBUTUHAN_${dateTime}`
+        //            $.ajax({
+        //                    type: "GET",
+        //                    cache:false,
+        //                    processData: false,
+        //                    contentType: false,
+        //                    // defining the response as a binary file
+        //                    xhrFields: {
+        //                        responseType: 'blob' 
+        //                    },  
+        //                    url: url,
+        //                    success: (data) => {
+        //                        let a = document.createElement('a');
+        //                        let url = window.URL.createObjectURL(data);
+        //                        a.href = url;
+        //                        a.download = namaFile;
+        //                        document.body.append(a);
+        //                        a.click();
+        //                        a.remove();
+        //                        window.URL.revokeObjectURL(url);
+        //                    }
+        //            });
+        //        }
+        //    },
        ]
        },
        columns: [

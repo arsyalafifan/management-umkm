@@ -217,9 +217,6 @@ class StockManagementController extends BaseController
                 $tglnow = date('Y-m-d');
 
                 foreach ($request->file('file') as $key => $value) {
-                   //  $fileName = time().'_'.rand(1,1000).'.'.$request->file('filesarpraskebutuhan')[$key]->extension();
-                    // $filePath = $request->file('filesarpraskebutuhan')[$key]->store('public/uploaded/sarpraskebutuhan');
-                    // $files = $filePath;
 
                     $fileName = $tglnow.'_'.rand(1,1000).'_'.$request->file('file')[$key]->getClientOriginalName();   
                     $filePath = $request->file('file')[$key]->storeAs('public/uploaded/stockmanagement', $fileName);  
@@ -228,7 +225,6 @@ class StockManagementController extends BaseController
                     $modelFileStock = new FileStock;
                     $modelFileStock->file = $files;
 
-                    // $modelFileStock->filesarpraskebutuhan = $files;
                     $modelFileStock->stockid = $model->stockid;
                     $modelFileStock->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
                     $modelFileStock->save();
@@ -314,43 +310,14 @@ class StockManagementController extends BaseController
      */
     public function edit(Request $request, $id)
     {
-        //  $this->authorize('edit-13');
+        Log::channel('mibedil')->info('Halaman Ubah '.$this->page, ['id' => $id]);
 
-        //  Log::channel('mibedil')->info('Halaman Ubah '.$this->page, ['id' => $id]);
+        $stock = StockManagement::where('stockid', $id)->firstOrFail();
 
-        //  $stock = FileStock::where('stockid', $id)->firstOrFail();
-
-        //  if ($request->ajax()) {
-        //     $data = [];
-        //     $count = 0;
-        //     $page = $request->get('start', 0);  
-        //     $perpage = $request->get('length',50);
-
-        //     // data table kondisi sarpras
-        //     try {
-        //         $filestock = FileStock::where('stockid', $id)
-        //             ->where('dlt', '0')
-        //             ->orderBy('filestockid')
-        //         ;
-        //         $countFileStock = $filestock->count();
-        //         $filestock = $filestock->skip($page)->take($perpage)->get();
-        //     }catch (QueryException $e) {
-        //         return $this->sendError('SQL Error', $this->getQueryError($e));
-        //     }
-        //     catch (Exception $e) {
-        //         return $this->sendError('Error', $e->getMessage());
-        //     }
-        // }
-
-        //  return view(
-        //     'stockmanagement.edit', 
-        //     [
-        //         'page' => $this->page, 
-        //         'child' => 'Tambah Data', 
-        //         'masterurl' => route('stockmanagement.index'), 
-        //         'stock' => $stock,
-        //     ]
-        // );
+        return view('stockmanagement.edit', 
+                    [
+                        'page' => $this->page, 'createbutton' => true, 'createurl' => route('stockmanagement.create'), 'child' => 'Ubah Data', 'masterurl' => route('stockmanagement.index'), 'stock' => $stock
+                    ]);
     }
 
     /**
@@ -360,52 +327,63 @@ class StockManagementController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        // $this->authorize('edit-13');
-
         $user = auth('sanctum')->user();
 
-        try {
+        try{
+            // $user = auth('sanctum')->user();
+            $model = StockManagement::find($id);
 
             DB::beginTransaction();
 
-            $model = SarprasKebutuhan::find($id);
-
-            $model->nopengajuan = $request->nopengajuan;
-            $model->tglpengajuan = $request->tglpengajuan;
-            $model->jeniskebutuhan = $request->jeniskebutuhan;
-            $model->pegawaiid = $request->pegawaiid;
-            $model->jenissarpras = $request->jenissarpras;
-            $model->namasarprasid = $request->namasarprasid;
+            $model->kodestock = $request->kodestock;
+            $model->namastock = $request->namastock;
             $model->jumlah = $request->jumlah;
-            $model->satuan = $request->satuan;
-            $model->thang = $request->thang;
+            $model->harga = $request->harga;
 
-            $model->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+            $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
 
             $model->save();
+
+           //  dd($user->login);
+            // if ($model->save()) {
+            //     // Save multiple akreditasi data and image
+            //     $files = [];
+            //     $tglnow = date('Y-m-d');
+
+            //     foreach ($request->file('file') as $key => $value) {
+
+            //         $fileName = $tglnow.'_'.rand(1,1000).'_'.$request->file('file')[$key]->getClientOriginalName();   
+            //         $filePath = $request->file('file')[$key]->storeAs('public/uploaded/stockmanagement', $fileName);  
+            //         $files = $fileName; 
+                    
+            //         $modelFileStock = new FileStock;
+            //         $modelFileStock->file = $files;
+
+            //         $modelFileStock->stockid = $model->stockid;
+            //         $modelFileStock->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
+            //         $modelFileStock->save();
+            //     }
+            // }
+
+            // dd($request->all());
+
             DB::commit();
 
-        }catch(QueryException $e){
-            return $this->sendError('SQL Error', $this->getQueryError($e));
-        }catch (Exception $e) {
-            return $this->sendError('Error', $e->getMessage());
-        }
-
-        return redirect()
-                ->route('sarpraskebutuhan.index')
-                ->with(
-                    'success', 
-                    'Data sarpras kebutuhan berhasil diubah.', 
+            return redirect()
+               ->route('stockmanagement.index')
+               ->with(
+                'success', 
+                'Data stock berhasil ditambah.', 
                     [
-                        'page' => $this->page,
+                        'page' => $this->page, 
                     ]
-                )
-                ->with(
-                    'oldsekolahid', $model->sekolahid
-                )
-        ;
+                    );
+        }catch(\Throwable $th)
+        {
+            return response(['error' => $th->getMessage()], 500);
+        }
     }
 
     public function storedetailsarpraskebutuhan(Request $request)
@@ -575,13 +553,13 @@ class StockManagementController extends BaseController
          try {
             DB::beginTransaction();
             
-            $sarpraskebutuhan = SarprasKebutuhan::find($id);
+            $stock = StockManagement::find($id);
 
-            $sarpraskebutuhan->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+            $stock->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
 
-            $sarpraskebutuhan->dlt = '1';
+            $stock->dlt = '1';
 
-            $sarpraskebutuhan->save();
+            $stock->save();
 
             // if($sarpraskebutuhan->save())
             // {
@@ -598,7 +576,7 @@ class StockManagementController extends BaseController
             return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'Data Sarpras Kebutuhan Berhasil Dihapus.',
+                'message' => 'Stock berhasil dihapus.',
             ], 200);
 
          } catch (\Throwable $th) {

@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Budget extends Model
+class TransactionManagement extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbbudget';
-    protected $primaryKey = 'budgetid';
+    protected $table = 'tbtransactionmanagement';
+    protected $primaryKey = 'transactionid';
     const CREATED_AT = 'tgladd';
     const UPDATED_AT = 'tgledit';
 
@@ -20,11 +20,13 @@ class Budget extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'budgetid',
-        'rekeningid',
-        'judul',
-        'tglbudget',
-        'terealisasikan',
+        'transactionid',
+        'stockid',
+        'tgltransaksi',
+        'jumlah',
+        'total',
+        'keterangan',
+        'status',
         'opadd',
         'pcadd',
         'tgladd',

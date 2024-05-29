@@ -13,6 +13,7 @@ use App\Http\Requests\sarpras\SarprasTersedia\DetailSarpras\CreateRequest as Det
 use App\Http\Requests\sarpras\SarprasTersedia\JenisSarpras\CreateRequest as JenisSarprasCreateRequest;
 use App\Http\Requests\sarpras\SarprasTersedia\JenisSarpras\UpdateRequest as JenisSarprasUpdateRequest;
 use App\Models\Budget;
+use App\Models\AlokasiBudget;
 use App\Models\master\Sekolah;
 use App\Models\Rekening;
 use App\Models\sarpras\DetailJumlahSarpras;
@@ -46,23 +47,11 @@ class BudgetManagementController extends BaseController
      */
     public function index(Request $request)
     {
-        // $this->authorize('view-12');
-
         Log::channel('management-umkm')->info('Halaman '.$this->page);
-
-        // $sekolah = [];
-        // $kota = [];
 
         if($request->ajax())
         {
             $search = $request->search;
-            // $kotaid = $request->kotaid;
-            // $jenis = $request->jenis;
-            // $jenjang = $request->jenjang;
-            // $kecamatanid = $request->kecamatanid;
-            // $sekolahid = Auth::user()->isSekolah() ? auth('sanctum')->user()->sekolahid : $request->sekolahid;
-
-            // dd($sekolahid);
 
             $data = [];
             $count = 0;
@@ -71,36 +60,16 @@ class BudgetManagementController extends BaseController
 
             try {
                 $rekening = DB::table('tbrekening')
-                        // ->join('tbmsekolah', function($join)
-                        //     {
-                        //         $join->on('tbmsekolah.sekolahid', '=', 'tbtranssarprastersedia.sekolahid');
-                        //         $join->on('tbmsekolah.dlt','=',DB::raw("'0'"));
-                        //     }
-                        // )
-                        // ->join('tbmnamasarpras', function($join)
-                        // {
-                        //     $join->on('tbmnamasarpras.namasarprasid', '=', 'tbtranssarprastersedia.namasarprasid');
-                        //     $join->on('tbmnamasarpras.dlt', '=', DB::raw("'0'"));
-                        // })
+    
                         ->select('tbrekening.*')
                         ->where('tbrekening.dlt', '0')
-                        // ->where('tbmsekolah.sekolahid', $sekolahid)
-                        // ->where('tbmsekolah.sekolahid', auth('sanctum')->user()->sekolahid)
+
                         ->where(function($query) use ($search)
                         {
-                            // if (!is_null($provid) && $provid!='') $query->where('tbmkota.provid', $provid);
-                            // if (!is_null($kotaid) && $kotaid!='') $query->where('tbmsekolah.kotaid', $kotaid);
-                            // if (!is_null($jenis) && $jenis!='') $query->where('tbmsekolah.jenis', $jenis);
-                            // if (!is_null($jenjang) && $jenjang!='') $query->where('tbmsekolah.jenjang', $jenjang);
-                            // if (!is_null($kecamatanid) && $kecamatanid!='') $query->where('tbmsekolah.kecamatanid', $kecamatanid);
-                            // if (!is_null($sekolahid) && $sekolahid!='') $query->where('tbmsekolah.sekolahid', $sekolahid);
                             
                             if (!is_null($search) && $search!='') {
-                                // $query->where(DB::raw('CONCAT(tbmkota.kodekota, tbmkota.namakota)'), 'ilike', '%'.$search.'%');
-                                // $query->where('tbmsekolah.sekolahid', auth('sanctum')->user()->sekolahid);
                                 $query->where(DB::raw('tbrekening.bank'), 'ilike', '%'.$search.'%');
                                 $query->orWhere(DB::raw('tbrekening.koderekening'), 'ilike', '%'.$search.'%');
-                                // $query->orWhere(DB::raw('(CASE WHEN '.$search.' = 1 THEN  ELSE 0 END) AS is_user'));
                                 $query->orWhere(DB::raw('tbrekening.saldo'), 'ilike', '%'.$search.'%');
                             }
                         })
@@ -120,56 +89,6 @@ class BudgetManagementController extends BaseController
                 'count' => $count
             ], 'Rekening retrieved successfully.');  
         }
-
-        // $kota = DB::table('tbmkota')
-        //     ->select('tbmkota.kotaid', 'tbmkota.kodekota', 'tbmkota.namakota')
-        //     ->where('tbmkota.dlt', 0)
-        //     ->orderBy('tbmkota.kodekota')
-        //     ->get()
-        // ;
-        // $sekolah = DB::table('tbmsekolah')
-        //     ->select('tbmsekolah.sekolahid', 'tbmsekolah.namasekolah')
-        //     ->where('tbmsekolah.dlt', 0)
-        //     ->orderBy('tbmsekolah.namasekolah')
-        //     ->get()
-        // ;
-        // $kecamatan = DB::table('tbmkecamatan')
-        //     ->select('tbmkecamatan.kecamatanid', 'tbmkecamatan.kodekec', 'tbmkecamatan.namakec')
-        //     ->where('tbmkecamatan.dlt', 0)
-        //     ->orderBy('tbmkecamatan.kodekec')
-        //     ->get()
-        // ;
-
-        // $subkegiatan = DB::table('tbmsubkeg')
-        //     ->join('tbmkeg', function ($join){
-        //         $join->on('tbmkeg.kegid', '=', 'tbmsubkeg.kegid');
-        //         $join->on('tbmkeg.dlt', '=', DB::raw("'0'"));
-        //     })
-        //     ->join('tbmprog', function ($join){
-        //         $join->on('tbmprog.progid', '=', 'tbmkeg.progid');
-        //         $join->on('tbmprog.dlt', '=', DB::raw("'0'"));
-        //     })
-        //     ->select('tbmsubkeg.*', 'tbmkeg.kegkode', 'tbmprog.progkode')
-        //     ->where('tbmsubkeg.dlt', 0)
-        //     ->get()
-        // ;
-
-        // $perusahaan = DB::table('tbmperusahaan')
-        //     ->select('tbmperusahaan.*')
-        //     ->where('tbmperusahaan.dlt', 0)
-        //     ->get()
-        // ;
-
-        // $jenisperalatan = DB::table('tbmjenisperalatan')
-        //     ->select('tbmjenisperalatan.jenisperalatanid', 'tbmjenisperalatan.nama')
-        //     ->where('tbmjenisperalatan.dlt', 0)
-        //     ->get()
-        // ;
-
-        // $userSekolah = DB::table('tbmsekolah')->select('tbmsekolah.*')->where('tbmsekolah.sekolahid', auth('sanctum')->user()->sekolahid == null ? -1 : auth('sanctum')->user()->sekolahid)->get();
-        // $userSekolah = Sekolah::where('tbmsekolah.sekolahid', auth('sanctum')->user()->sekolahid == null ? -1 : auth('sanctum')->user()->sekolahid)->first();
-
-        // dd($userSekolah);
 
         return view(
             'budgetmanagement.index', 
@@ -374,7 +293,7 @@ class BudgetManagementController extends BaseController
  
              $model->bank = $request->bank;
              $model->koderekening = $request->koderekening;
-             $model->saldo = $request->saldo;
+             $model->saldo = str_replace('.', '', $request->saldo);
  
              $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
  
@@ -408,7 +327,7 @@ class BudgetManagementController extends BaseController
  
              $model->bank = $request->bank;
              $model->koderekening = $request->koderekening;
-             $model->saldo = $request->saldo;
+             $model->saldo = str_replace('.', '', $request->saldo);
  
              $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
  
@@ -442,7 +361,8 @@ class BudgetManagementController extends BaseController
              DB::beginTransaction();
  
              $model->judul = $request->judul;
-             $model->totalbudget = $request->totalbudget;
+             $model->totalbudget = str_replace('.', '', $request->totalbudget);
+             $model->terealisasikan = 0;
              $model->tglbudget = $request->tglbudget;
              $model->rekeningid = $rekeningid;
  
@@ -457,6 +377,48 @@ class BudgetManagementController extends BaseController
                 'success' => true,
                 'data'    => 'Success',
                 'message' => 'budget added successfully.',
+            ], 200);
+         }catch (QueryException $e) {
+            return $this->sendError('SQL Error', $this->getQueryError($e));
+        }
+        catch (Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+    }
+
+    public function storeAlokasiBudget(Request $request, $budgetid)
+    {
+        //  $this->authorize('add-12');
+
+         $user = auth('sanctum')->user();
+
+         try{
+             $model = new AlokasiBudget;
+
+             $budget = Budget::find($budgetid)->where('dlt', 0)->first();
+ 
+             DB::beginTransaction();
+ 
+             $model->judul = $request->judul_alokasi;
+
+            //  if($budget->totalbudget + $request->alokasibudget > )
+
+             $model->alokasibudget = str_replace('.', '', $request->alokasibudget);
+             $model->tglalokasibudget = $request->tglalokasibudget;
+             $model->statusrealisasi = '1';
+             $model->budgetid = $budgetid;
+ 
+             $model->fill(['opadd' => $user->login, 'pcadd' => $request->ip()]);
+ 
+            //  dd($user->login);
+            $model->save();
+ 
+             DB::commit();
+ 
+             return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'alokasi budget added successfully.',
             ], 200);
          }catch (QueryException $e) {
             return $this->sendError('SQL Error', $this->getQueryError($e));
@@ -1316,14 +1278,14 @@ class BudgetManagementController extends BaseController
      */
     public function destroy(Request $request, $id)
     {
-        $this->authorize('delete-12');
+        // $this->authorize('delete-12');
 
         $user = auth('sanctum')->user();
 
         try {
             DB::beginTransaction();
 
-            $model = SarprasTersedia::find($id);
+            $model = Rekening::find($id);
 
             $model->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
 
@@ -1336,7 +1298,7 @@ class BudgetManagementController extends BaseController
             return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'jenis sarpras deleted successfully.',
+                'message' => 'rekening deleted successfully.',
             ], 200);
 
         } catch (\Throwable $th) {
@@ -1344,17 +1306,17 @@ class BudgetManagementController extends BaseController
         }
     }
 
-    public function destroydetailsarpras(Request $request, $id)
+    public function destroybudget(Request $request, $id)
     {
 
-        $this->authorize('delete-12');
+        // $this->authorize('delete-12');
 
         $user = auth('sanctum')->user();
 
         try {
             DB::beginTransaction();
 
-            $model = DetailSarprasTersedia::find($id);
+            $model = Budget::find($id);
 
             $model->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
 
@@ -1369,7 +1331,7 @@ class BudgetManagementController extends BaseController
             return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'detail sarpras deleted successfully.',
+                'message' => 'budget deleted successfully.',
             ], 200);
 
         //     return redirect()
@@ -1383,25 +1345,20 @@ class BudgetManagementController extends BaseController
 
     }
 
-    public function destroydetailpagu(Request $request, $id)
+    public function destroyalokasibudget(Request $request, $id)
     {
-        $this->authorize('delete-12');
+        // $this->authorize('delete-12');
 
         $user = auth('sanctum')->user();
 
         try {
             DB::beginTransaction();
 
-            $model = DetailPaguSarprasTersedia::find($id);
+            $model = AlokasiBudget::find($id);
 
             $model->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
 
             $model->dlt = '1';
-
-            if($model->file != ''  && $model->file != null){
-                $file_old = public_path().'/storage/uploaded/sarprastersedia/detailsarpras/'.$model->file;
-                unlink($file_old);
-            }
             // $model->file = null;
 
             $model->save();
@@ -1410,7 +1367,7 @@ class BudgetManagementController extends BaseController
             return response([
                 'success' => true,
                 'data'    => 'Success',
-                'message' => 'detail pagu sarpras deleted successfully.',
+                'message' => 'alokasi budget deleted successfully.',
             ], 200);
         } catch (\Throwable $th) {
             return response(['error' => $th->getMessage()], 500);
@@ -1506,6 +1463,42 @@ class BudgetManagementController extends BaseController
                 'data' => $data,
                 'count' => $count
             ], 'Budget retrieved successfully.'); 
+        }
+    }
+
+    public function loadAlokasiBudget(Request $request, $id) 
+    {
+        // $this->authorize('view-10');
+        $user = auth('sanctum')->user();
+        Log::channel('mibedil')->info('Halaman '.$this->page);
+
+        if ($request->ajax()) {
+
+            $data = [];
+            $count = 0;
+            $page = $request->get('start', 0);  
+            $perpage = $request->get('length',50);
+
+            try {
+                $alokasibudget = DB::table('tbalokasibudget')
+                    ->select('tbalokasibudget.*')
+                    ->where('tbalokasibudget.budgetid', $id)
+                    ->where('tbalokasibudget.dlt', '0')
+                    ->orderBy('tbalokasibudget.alokasibudgetid')
+                ;
+                $count = $alokasibudget->count();
+                $data = $alokasibudget->skip($page)->take($perpage)->get();
+            } catch (QueryException $e) {
+                return $this->sendError('SQL Error', $this->getQueryError($e));
+            }
+            catch (Exception $e) {
+                return $this->sendError('Error', $e->getMessage());
+            }
+
+            return $this->sendResponse([
+                'data' => $data,
+                'count' => $count
+            ], 'Alokasi budget retrieved successfully.'); 
         }
     }
 
@@ -1719,6 +1712,47 @@ class BudgetManagementController extends BaseController
                 'success' => true,
                 'data'    => 'Success',
                 'message' => 'file detail jumlah sarpras deleted successfully.',
+                'file' => $model,
+            ], 200);
+        } catch (\Throwable $th) {
+            return response(['error' => $th->getMessage()], 500);
+        }
+    }
+
+    public function statusrealisasi(Request $request, $alokasibudgetid)
+    {
+        // $this->authorize('delete-12');
+
+        $user = auth('sanctum')->user();
+        try {
+
+            DB::beginTransaction();
+            $model = AlokasiBudget::find($alokasibudgetid);
+
+            $budget = Budget::where('budgetid', $model->budgetid)->where('dlt', 0)->first();
+            $rekening = Rekening::where('rekeningid', $budget->rekeningid)->where('dlt', 0)->first();
+
+            $model->statusrealisasi = '2';
+            $budget->terealisasikan = $model->alokasibudget + $budget->terealisasikan;
+            $model->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+
+            $model->save();
+            $budget->save();
+
+            // if($model->save() && $budget->save())
+            // {
+                $rekening->saldo = $rekening->saldo - $model->alokasibudget;
+                $rekening->fill(['opedit' => $user->login, 'pcedit' => $request->ip()]);
+
+                $rekening->save();
+            // }
+
+            DB::commit();
+
+            return response([
+                'success' => true,
+                'data'    => 'Success',
+                'message' => 'statusrealisasi has changed.',
                 'file' => $model,
             ], 200);
         } catch (\Throwable $th) {
